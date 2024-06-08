@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+option go_package = "Ocr-Service/ocr";
+
+package ocr_service;
+
+message TestRequest {
+    string message = 1;
+}
+
+message TestResponse {
+    string response = 1;
+}
+
+service OcrService {
+    rpc TestConnection (TestRequest) returns (TestResponse);
+}
