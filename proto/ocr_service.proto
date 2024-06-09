@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-option go_package = "Ocr-Service/ocr";
+option go_package = "internal/proto";
 
 package ocr_service;
 
@@ -12,6 +12,35 @@ message TestResponse {
     string response = 1;
 }
 
+message ExtractRequest {
+    bytes binary = 1;
+};
+
+message ExpenseField {
+    string text = 1;
+    double confidence = 2;
+}
+
+message ExtractResponse {
+    ExpenseField FILE_PAGE = 1;
+    ExpenseField FILE_NAME = 2;
+    ExpenseField INVOICE_RECEIPT_DATE = 3;
+    ExpenseField VENDOR_NAME = 4;
+    ExpenseField VENDOR_ADDRESS = 5;
+    ExpenseField TOTAL = 6;
+    ExpenseField SUBTOTAL = 7;
+    ExpenseField TAX = 8;
+    ExpenseField VENDOR_PHONE = 9;
+    ExpenseField STREET = 10;
+    ExpenseField GRATUITY = 11;
+    ExpenseField CITY = 12;
+    ExpenseField STATE = 13;
+    ExpenseField COUNTRY = 14;
+    ExpenseField ZIP_CODE = 15;
+    ExpenseField CATEGORY = 16;
+}
+
 service OcrService {
     rpc TestConnection (TestRequest) returns (TestResponse);
+    rpc ExtractFileData (stream ExtractRequest) returns (ExtractResponse);
 }

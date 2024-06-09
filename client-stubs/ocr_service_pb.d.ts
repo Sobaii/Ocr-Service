@@ -38,3 +38,155 @@ export namespace TestResponse {
   }
 }
 
+export class ExtractRequest extends jspb.Message {
+  getBinary(): Uint8Array | string;
+  getBinary_asU8(): Uint8Array;
+  getBinary_asB64(): string;
+  setBinary(value: Uint8Array | string): ExtractRequest;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): ExtractRequest.AsObject;
+  static toObject(includeInstance: boolean, msg: ExtractRequest): ExtractRequest.AsObject;
+  static serializeBinaryToWriter(message: ExtractRequest, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): ExtractRequest;
+  static deserializeBinaryFromReader(message: ExtractRequest, reader: jspb.BinaryReader): ExtractRequest;
+}
+
+export namespace ExtractRequest {
+  export type AsObject = {
+    binary: Uint8Array | string,
+  }
+}
+
+export class ExpenseField extends jspb.Message {
+  getText(): string;
+  setText(value: string): ExpenseField;
+
+  getConfidence(): number;
+  setConfidence(value: number): ExpenseField;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): ExpenseField.AsObject;
+  static toObject(includeInstance: boolean, msg: ExpenseField): ExpenseField.AsObject;
+  static serializeBinaryToWriter(message: ExpenseField, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): ExpenseField;
+  static deserializeBinaryFromReader(message: ExpenseField, reader: jspb.BinaryReader): ExpenseField;
+}
+
+export namespace ExpenseField {
+  export type AsObject = {
+    text: string,
+    confidence: number,
+  }
+}
+
+export class ExtractResponse extends jspb.Message {
+  getFilePage(): ExpenseField | undefined;
+  setFilePage(value?: ExpenseField): ExtractResponse;
+  hasFilePage(): boolean;
+  clearFilePage(): ExtractResponse;
+
+  getFileName(): ExpenseField | undefined;
+  setFileName(value?: ExpenseField): ExtractResponse;
+  hasFileName(): boolean;
+  clearFileName(): ExtractResponse;
+
+  getInvoiceReceiptDate(): ExpenseField | undefined;
+  setInvoiceReceiptDate(value?: ExpenseField): ExtractResponse;
+  hasInvoiceReceiptDate(): boolean;
+  clearInvoiceReceiptDate(): ExtractResponse;
+
+  getVendorName(): ExpenseField | undefined;
+  setVendorName(value?: ExpenseField): ExtractResponse;
+  hasVendorName(): boolean;
+  clearVendorName(): ExtractResponse;
+
+  getVendorAddress(): ExpenseField | undefined;
+  setVendorAddress(value?: ExpenseField): ExtractResponse;
+  hasVendorAddress(): boolean;
+  clearVendorAddress(): ExtractResponse;
+
+  getTotal(): ExpenseField | undefined;
+  setTotal(value?: ExpenseField): ExtractResponse;
+  hasTotal(): boolean;
+  clearTotal(): ExtractResponse;
+
+  getSubtotal(): ExpenseField | undefined;
+  setSubtotal(value?: ExpenseField): ExtractResponse;
+  hasSubtotal(): boolean;
+  clearSubtotal(): ExtractResponse;
+
+  getTax(): ExpenseField | undefined;
+  setTax(value?: ExpenseField): ExtractResponse;
+  hasTax(): boolean;
+  clearTax(): ExtractResponse;
+
+  getVendorPhone(): ExpenseField | undefined;
+  setVendorPhone(value?: ExpenseField): ExtractResponse;
+  hasVendorPhone(): boolean;
+  clearVendorPhone(): ExtractResponse;
+
+  getStreet(): ExpenseField | undefined;
+  setStreet(value?: ExpenseField): ExtractResponse;
+  hasStreet(): boolean;
+  clearStreet(): ExtractResponse;
+
+  getGratuity(): ExpenseField | undefined;
+  setGratuity(value?: ExpenseField): ExtractResponse;
+  hasGratuity(): boolean;
+  clearGratuity(): ExtractResponse;
+
+  getCity(): ExpenseField | undefined;
+  setCity(value?: ExpenseField): ExtractResponse;
+  hasCity(): boolean;
+  clearCity(): ExtractResponse;
+
+  getState(): ExpenseField | undefined;
+  setState(value?: ExpenseField): ExtractResponse;
+  hasState(): boolean;
+  clearState(): ExtractResponse;
+
+  getCountry(): ExpenseField | undefined;
+  setCountry(value?: ExpenseField): ExtractResponse;
+  hasCountry(): boolean;
+  clearCountry(): ExtractResponse;
+
+  getZipCode(): ExpenseField | undefined;
+  setZipCode(value?: ExpenseField): ExtractResponse;
+  hasZipCode(): boolean;
+  clearZipCode(): ExtractResponse;
+
+  getCategory(): ExpenseField | undefined;
+  setCategory(value?: ExpenseField): ExtractResponse;
+  hasCategory(): boolean;
+  clearCategory(): ExtractResponse;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): ExtractResponse.AsObject;
+  static toObject(includeInstance: boolean, msg: ExtractResponse): ExtractResponse.AsObject;
+  static serializeBinaryToWriter(message: ExtractResponse, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): ExtractResponse;
+  static deserializeBinaryFromReader(message: ExtractResponse, reader: jspb.BinaryReader): ExtractResponse;
+}
+
+export namespace ExtractResponse {
+  export type AsObject = {
+    filePage?: ExpenseField.AsObject,
+    fileName?: ExpenseField.AsObject,
+    invoiceReceiptDate?: ExpenseField.AsObject,
+    vendorName?: ExpenseField.AsObject,
+    vendorAddress?: ExpenseField.AsObject,
+    total?: ExpenseField.AsObject,
+    subtotal?: ExpenseField.AsObject,
+    tax?: ExpenseField.AsObject,
+    vendorPhone?: ExpenseField.AsObject,
+    street?: ExpenseField.AsObject,
+    gratuity?: ExpenseField.AsObject,
+    city?: ExpenseField.AsObject,
+    state?: ExpenseField.AsObject,
+    country?: ExpenseField.AsObject,
+    zipCode?: ExpenseField.AsObject,
+    category?: ExpenseField.AsObject,
+  }
+}
+

@@ -1,13 +1,13 @@
 package server
 
 import (
-	"context"
 	"flag"
 	"fmt"
 	"log"
 	"net"
 	"net/http"
-	pb "ocr-service-dev/ocr/proto"
+	"ocr-service-dev/internal/handlers"
+	pb "ocr-service-dev/internal/proto"
 
 	"github.com/improbable-eng/grpc-web/go/grpcweb"
 	"google.golang.org/grpc"
@@ -16,16 +16,12 @@ import (
 
 type server struct {
 	pb.UnimplementedOcrServiceServer
+	
 }
 
 var (
 	port = flag.Int("port", 50051, "The server port")
 )
-
-func (s *server) TestConnection(ctx context.Context, req *pb.TestRequest) (*pb.TestResponse, error) {
-	log.Printf("Request message: %v", req.GetMessage())
-	return &pb.TestResponse{Response: "Connection successful. Request message is: " + req.GetMessage()}, nil
-}
 
 
 func RunServer() {
@@ -38,7 +34,7 @@ func RunServer() {
 	}
 
 	s := grpc.NewServer()
-	pb.RegisterOcrServiceServer(s, &server{})
+	pb.RegisterOcrServiceServer(s, &handlers.OcrServiceHandler{})
 	reflection.Register(s)
 
 	go func() {

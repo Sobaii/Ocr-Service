@@ -1,7 +1,7 @@
 package main
 
 import (
-	"ocr-service-dev/internal/server"
+	"ocr-service-dev/cmd/server"
 )
 
 func main() {
