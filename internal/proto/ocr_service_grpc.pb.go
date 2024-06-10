@@ -28,7 +28,7 @@ const (
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type OcrServiceClient interface {
 	TestConnection(ctx context.Context, in *TestRequest, opts ...grpc.CallOption) (*TestResponse, error)
-	ExtractFileData(ctx context.Context, opts ...grpc.CallOption) (OcrService_ExtractFileDataClient, error)
+	ExtractFileData(ctx context.Context, in *ExtractRequest, opts ...grpc.CallOption) (*ExtractResponse, error)
 }
 
 type ocrServiceClient struct {
@@ -49,39 +49,14 @@ func (c *ocrServiceClient) TestConnection(ctx context.Context, in *TestRequest, 
 	return out, nil
 }
 
-func (c *ocrServiceClient) ExtractFileData(ctx context.Context, opts ...grpc.CallOption) (OcrService_ExtractFileDataClient, error) {
+func (c *ocrServiceClient) ExtractFileData(ctx context.Context, in *ExtractRequest, opts ...grpc.CallOption) (*ExtractResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	stream, err := c.cc.NewStream(ctx, &OcrService_ServiceDesc.Streams[0], OcrService_ExtractFileData_FullMethodName, cOpts...)
+	out := new(ExtractResponse)
+	err := c.cc.Invoke(ctx, OcrService_ExtractFileData_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
-	x := &ocrServiceExtractFileDataClient{ClientStream: stream}
-	return x, nil
-}
-
-type OcrService_ExtractFileDataClient interface {
-	Send(*ExtractRequest) error
-	CloseAndRecv() (*ExtractResponse, error)
-	grpc.ClientStream
-}
-
-type ocrServiceExtractFileDataClient struct {
-	grpc.ClientStream
-}
-
-func (x *ocrServiceExtractFileDataClient) Send(m *ExtractRequest) error {
-	return x.ClientStream.SendMsg(m)
-}
-
-func (x *ocrServiceExtractFileDataClient) CloseAndRecv() (*ExtractResponse, error) {
-	if err := x.ClientStream.CloseSend(); err != nil {
-		return nil, err
-	}
-	m := new(ExtractResponse)
-	if err := x.ClientStream.RecvMsg(m); err != nil {
-		return nil, err
-	}
-	return m, nil
+	return out, nil
 }
 
 // OcrServiceServer is the server API for OcrService service.
@@ -89,7 +64,7 @@ func (x *ocrServiceExtractFileDataClient) CloseAndRecv() (*ExtractResponse, erro
 // for forward compatibility
 type OcrServiceServer interface {
 	TestConnection(context.Context, *TestRequest) (*TestResponse, error)
-	ExtractFileData(OcrService_ExtractFileDataServer) error
+	ExtractFileData(context.Context, *ExtractRequest) (*ExtractResponse, error)
 	mustEmbedUnimplementedOcrServiceServer()
 }
 
@@ -100,8 +75,8 @@ type UnimplementedOcrServiceServer struct {
 func (UnimplementedOcrServiceServer) TestConnection(context.Context, *TestRequest) (*TestResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method TestConnection not implemented")
 }
-func (UnimplementedOcrServiceServer) ExtractFileData(OcrService_ExtractFileDataServer) error {
-	return status.Errorf(codes.Unimplemented, "method ExtractFileData not implemented")
+func (UnimplementedOcrServiceServer) ExtractFileData(context.Context, *ExtractRequest) (*ExtractResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ExtractFileData not implemented")
 }
 func (UnimplementedOcrServiceServer) mustEmbedUnimplementedOcrServiceServer() {}
 
@@ -134,30 +109,22 @@ func _OcrService_TestConnection_Handler(srv interface{}, ctx context.Context, de
 	return interceptor(ctx, in, info, handler)
 }
 
-func _OcrService_ExtractFileData_Handler(srv interface{}, stream grpc.ServerStream) error {
-	return srv.(OcrServiceServer).ExtractFileData(&ocrServiceExtractFileDataServer{ServerStream: stream})
-}
-
-type OcrService_ExtractFileDataServer interface {
-	SendAndClose(*ExtractResponse) error
-	Recv() (*ExtractRequest, error)
-	grpc.ServerStream
-}
-
-type ocrServiceExtractFileDataServer struct {
-	grpc.ServerStream
-}
-
-func (x *ocrServiceExtractFileDataServer) SendAndClose(m *ExtractResponse) error {
-	return x.ServerStream.SendMsg(m)
-}
-
-func (x *ocrServiceExtractFileDataServer) Recv() (*ExtractRequest, error) {
-	m := new(ExtractRequest)
-	if err := x.ServerStream.RecvMsg(m); err != nil {
+func _OcrService_ExtractFileData_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ExtractRequest)
+	if err := dec(in); err != nil {
 		return nil, err
 	}
-	return m, nil
+	if interceptor == nil {
+		return srv.(OcrServiceServer).ExtractFileData(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: OcrService_ExtractFileData_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(OcrServiceServer).ExtractFileData(ctx, req.(*ExtractRequest))
+	}
+	return interceptor(ctx, in, info, handler)
 }
 
 // OcrService_ServiceDesc is the grpc.ServiceDesc for OcrService service.
@@ -171,13 +138,11 @@ var OcrService_ServiceDesc = grpc.ServiceDesc{
 			MethodName: "TestConnection",
 			Handler:    _OcrService_TestConnection_Handler,
 		},
-	},
-	Streams: []grpc.StreamDesc{
 		{
-			StreamName:    "ExtractFileData",
-			Handler:       _OcrService_ExtractFileData_Handler,
-			ClientStreams: true,
+			MethodName: "ExtractFileData",
+			Handler:    _OcrService_ExtractFileData_Handler,
 		},
 	},
+	Streams:  []grpc.StreamDesc{},
 	Metadata: "proto/ocr_service.proto",
 }

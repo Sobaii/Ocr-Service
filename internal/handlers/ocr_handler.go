@@ -2,7 +2,6 @@ package handlers
 
 import (
 	"context"
-	"io"
 	"log"
 	pb "ocr-service-dev/internal/proto"
 	"ocr-service-dev/internal/services"
@@ -17,24 +16,14 @@ func (h *OcrServiceHandler) TestConnection(ctx context.Context, req *pb.TestRequ
 	return &pb.TestResponse{Response: "Connection successful. Request message is: " + req.GetMessage()}, nil
 }
 
-func (h *OcrServiceHandler) ExtractFileData(stream pb.OcrService_ExtractFileDataServer) error {
-	var finalRequest *pb.ExtractRequest
-	for {
-		req, err := stream.Recv()
-		if err == io.EOF {
-			break
-		}
-		if err != nil {
-			return err
-		}
-		finalRequest = req
-	}
-	log.Println(finalRequest.String())
+// extract file data
+func (h *OcrServiceHandler) ExtractFileData(ctx context.Context, req *pb.ExtractRequest) (*pb.ExtractResponse, error) {
+	log.Printf("Received file data of length: %d", len(req.Binary))
 
 	// Get mock data
 	mockData := services.GetMockData()
 
-	// Convert mockData (models.Expense) to pb.ExtractResponse
+	// Return pb.ExtractResponse
 	response := &pb.ExtractResponse{
 		FILE_PAGE:            &pb.ExpenseField{Text: mockData.FilePage.Text, Confidence: mockData.FilePage.Confidence},
 		FILE_NAME:            &pb.ExpenseField{Text: mockData.FileName.Text, Confidence: mockData.FileName.Confidence},
@@ -54,5 +43,5 @@ func (h *OcrServiceHandler) ExtractFileData(stream pb.OcrService_ExtractFileData
 		CATEGORY:             &pb.ExpenseField{Text: mockData.Category.Text, Confidence: mockData.Category.Confidence},
 	}
 
-	return stream.SendAndClose(response)
+	return response, nil
 }

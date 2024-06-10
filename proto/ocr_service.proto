@@ -42,5 +42,5 @@ message ExtractResponse {
 
 service OcrService {
     rpc TestConnection (TestRequest) returns (TestResponse);
-    rpc ExtractFileData (stream ExtractRequest) returns (ExtractResponse);
+    rpc ExtractFileData (ExtractRequest) returns (ExtractResponse);
 }
