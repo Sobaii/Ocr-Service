@@ -58,6 +58,28 @@ export namespace ExtractRequest {
   }
 }
 
+export class SearchRequest extends jspb.Message {
+  getIndex(): string;
+  setIndex(value: string): SearchRequest;
+
+  getQuery(): string;
+  setQuery(value: string): SearchRequest;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): SearchRequest.AsObject;
+  static toObject(includeInstance: boolean, msg: SearchRequest): SearchRequest.AsObject;
+  static serializeBinaryToWriter(message: SearchRequest, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): SearchRequest;
+  static deserializeBinaryFromReader(message: SearchRequest, reader: jspb.BinaryReader): SearchRequest;
+}
+
+export namespace SearchRequest {
+  export type AsObject = {
+    index: string,
+    query: string,
+  }
+}
+
 export class ExpenseField extends jspb.Message {
   getText(): string;
   setText(value: string): ExpenseField;
@@ -187,6 +209,26 @@ export namespace ExtractResponse {
     country?: ExpenseField.AsObject,
     zipCode?: ExpenseField.AsObject,
     category?: ExpenseField.AsObject,
+  }
+}
+
+export class Expenses extends jspb.Message {
+  getInfoList(): Array<ExtractResponse>;
+  setInfoList(value: Array<ExtractResponse>): Expenses;
+  clearInfoList(): Expenses;
+  addInfo(value?: ExtractResponse, index?: number): ExtractResponse;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): Expenses.AsObject;
+  static toObject(includeInstance: boolean, msg: Expenses): Expenses.AsObject;
+  static serializeBinaryToWriter(message: Expenses, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): Expenses;
+  static deserializeBinaryFromReader(message: Expenses, reader: jspb.BinaryReader): Expenses;
+}
+
+export namespace Expenses {
+  export type AsObject = {
+    infoList: Array<ExtractResponse.AsObject>,
   }
 }
 

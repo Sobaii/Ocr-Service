@@ -82,6 +82,49 @@ export class OcrServiceClient {
     this.methodDescriptorTestConnection);
   }
 
+  methodDescriptorSearchFileData = new grpcWeb.MethodDescriptor(
+    '/ocr_service.OcrService/SearchFileData',
+    grpcWeb.MethodType.UNARY,
+    ocr_service_pb.SearchRequest,
+    ocr_service_pb.Expenses,
+    (request: ocr_service_pb.SearchRequest) => {
+      return request.serializeBinary();
+    },
+    ocr_service_pb.Expenses.deserializeBinary
+  );
+
+  searchFileData(
+    request: ocr_service_pb.SearchRequest,
+    metadata?: grpcWeb.Metadata | null): Promise<ocr_service_pb.Expenses>;
+
+  searchFileData(
+    request: ocr_service_pb.SearchRequest,
+    metadata: grpcWeb.Metadata | null,
+    callback: (err: grpcWeb.RpcError,
+               response: ocr_service_pb.Expenses) => void): grpcWeb.ClientReadableStream<ocr_service_pb.Expenses>;
+
+  searchFileData(
+    request: ocr_service_pb.SearchRequest,
+    metadata?: grpcWeb.Metadata | null,
+    callback?: (err: grpcWeb.RpcError,
+               response: ocr_service_pb.Expenses) => void) {
+    if (callback !== undefined) {
+      return this.client_.rpcCall(
+        this.hostname_ +
+          '/ocr_service.OcrService/SearchFileData',
+        request,
+        metadata || {},
+        this.methodDescriptorSearchFileData,
+        callback);
+    }
+    return this.client_.unaryCall(
+    this.hostname_ +
+      '/ocr_service.OcrService/SearchFileData',
+    request,
+    metadata || {},
+    this.methodDescriptorSearchFileData);
+  }
+
   methodDescriptorExtractFileData = new grpcWeb.MethodDescriptor(
     '/ocr_service.OcrService/ExtractFileData',
     grpcWeb.MethodType.UNARY,

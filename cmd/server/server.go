@@ -1,6 +1,7 @@
 package server
 
 import (
+	"context"
 	"flag"
 	"fmt"
 	"log"
@@ -8,21 +9,16 @@ import (
 	"net/http"
 	"ocr-service-dev/internal/handlers"
 	pb "ocr-service-dev/internal/proto"
+	"ocr-service-dev/internal/utils"
 
 	"github.com/improbable-eng/grpc-web/go/grpcweb"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
 )
 
-type server struct {
-	pb.UnimplementedOcrServiceServer
-	
-}
-
 var (
 	port = flag.Int("port", 50051, "The server port")
 )
-
 
 func RunServer() {
 	flag.Parse()
@@ -36,6 +32,9 @@ func RunServer() {
 	s := grpc.NewServer()
 	pb.RegisterOcrServiceServer(s, &handlers.OcrServiceHandler{})
 	reflection.Register(s)
+
+	var context = context.Background()
+	utils.InitializeSearchIndex(context)
 
 	go func() {
 		log.Printf("gRPC server listening at %v", lis.Addr())

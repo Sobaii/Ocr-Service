@@ -16,6 +16,11 @@ message ExtractRequest {
     bytes binary = 1;
 };
 
+message SearchRequest {
+    string index = 1;
+    string query = 2;
+}
+
 message ExpenseField {
     string text = 1;
     double confidence = 2;
@@ -40,7 +45,12 @@ message ExtractResponse {
     ExpenseField CATEGORY = 16;
 }
 
+message Expenses {
+    repeated ExtractResponse info = 1;
+}
+
 service OcrService {
     rpc TestConnection (TestRequest) returns (TestResponse);
+    rpc SearchFileData (SearchRequest) returns (Expenses);
     rpc ExtractFileData (ExtractRequest) returns (ExtractResponse);
 }

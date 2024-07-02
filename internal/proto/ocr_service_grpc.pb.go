@@ -20,6 +20,7 @@ const _ = grpc.SupportPackageIsVersion8
 
 const (
 	OcrService_TestConnection_FullMethodName  = "/ocr_service.OcrService/TestConnection"
+	OcrService_SearchFileData_FullMethodName  = "/ocr_service.OcrService/SearchFileData"
 	OcrService_ExtractFileData_FullMethodName = "/ocr_service.OcrService/ExtractFileData"
 )
 
@@ -28,6 +29,7 @@ const (
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type OcrServiceClient interface {
 	TestConnection(ctx context.Context, in *TestRequest, opts ...grpc.CallOption) (*TestResponse, error)
+	SearchFileData(ctx context.Context, in *SearchRequest, opts ...grpc.CallOption) (*Expenses, error)
 	ExtractFileData(ctx context.Context, in *ExtractRequest, opts ...grpc.CallOption) (*ExtractResponse, error)
 }
 
@@ -49,6 +51,16 @@ func (c *ocrServiceClient) TestConnection(ctx context.Context, in *TestRequest, 
 	return out, nil
 }
 
+func (c *ocrServiceClient) SearchFileData(ctx context.Context, in *SearchRequest, opts ...grpc.CallOption) (*Expenses, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(Expenses)
+	err := c.cc.Invoke(ctx, OcrService_SearchFileData_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *ocrServiceClient) ExtractFileData(ctx context.Context, in *ExtractRequest, opts ...grpc.CallOption) (*ExtractResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(ExtractResponse)
@@ -64,6 +76,7 @@ func (c *ocrServiceClient) ExtractFileData(ctx context.Context, in *ExtractReque
 // for forward compatibility
 type OcrServiceServer interface {
 	TestConnection(context.Context, *TestRequest) (*TestResponse, error)
+	SearchFileData(context.Context, *SearchRequest) (*Expenses, error)
 	ExtractFileData(context.Context, *ExtractRequest) (*ExtractResponse, error)
 	mustEmbedUnimplementedOcrServiceServer()
 }
@@ -74,6 +87,9 @@ type UnimplementedOcrServiceServer struct {
 
 func (UnimplementedOcrServiceServer) TestConnection(context.Context, *TestRequest) (*TestResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method TestConnection not implemented")
+}
+func (UnimplementedOcrServiceServer) SearchFileData(context.Context, *SearchRequest) (*Expenses, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SearchFileData not implemented")
 }
 func (UnimplementedOcrServiceServer) ExtractFileData(context.Context, *ExtractRequest) (*ExtractResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ExtractFileData not implemented")
@@ -109,6 +125,24 @@ func _OcrService_TestConnection_Handler(srv interface{}, ctx context.Context, de
 	return interceptor(ctx, in, info, handler)
 }
 
+func _OcrService_SearchFileData_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(SearchRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(OcrServiceServer).SearchFileData(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: OcrService_SearchFileData_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(OcrServiceServer).SearchFileData(ctx, req.(*SearchRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _OcrService_ExtractFileData_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(ExtractRequest)
 	if err := dec(in); err != nil {
@@ -137,6 +171,10 @@ var OcrService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "TestConnection",
 			Handler:    _OcrService_TestConnection_Handler,
+		},
+		{
+			MethodName: "SearchFileData",
+			Handler:    _OcrService_SearchFileData_Handler,
 		},
 		{
 			MethodName: "ExtractFileData",
