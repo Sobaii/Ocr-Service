@@ -43,6 +43,7 @@ message ExtractResponse {
     ExpenseField COUNTRY = 14;
     ExpenseField ZIP_CODE = 15;
     ExpenseField CATEGORY = 16;
+    string object_url = 17;
 }
 
 message Expenses {

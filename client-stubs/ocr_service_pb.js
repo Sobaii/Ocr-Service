@@ -947,7 +947,8 @@ proto.ocr_service.ExtractResponse.toObject = function(includeInstance, msg) {
     state: (f = msg.getState()) && proto.ocr_service.ExpenseField.toObject(includeInstance, f),
     country: (f = msg.getCountry()) && proto.ocr_service.ExpenseField.toObject(includeInstance, f),
     zipCode: (f = msg.getZipCode()) && proto.ocr_service.ExpenseField.toObject(includeInstance, f),
-    category: (f = msg.getCategory()) && proto.ocr_service.ExpenseField.toObject(includeInstance, f)
+    category: (f = msg.getCategory()) && proto.ocr_service.ExpenseField.toObject(includeInstance, f),
+    objectUrl: jspb.Message.getFieldWithDefault(msg, 17, "")
   };
 
   if (includeInstance) {
@@ -1063,6 +1064,10 @@ proto.ocr_service.ExtractResponse.deserializeBinaryFromReader = function(msg, re
       var value = new proto.ocr_service.ExpenseField;
       reader.readMessage(value,proto.ocr_service.ExpenseField.deserializeBinaryFromReader);
       msg.setCategory(value);
+      break;
+    case 17:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setObjectUrl(value);
       break;
     default:
       reader.skipField();
@@ -1219,6 +1224,13 @@ proto.ocr_service.ExtractResponse.serializeBinaryToWriter = function(message, wr
       16,
       f,
       proto.ocr_service.ExpenseField.serializeBinaryToWriter
+    );
+  }
+  f = message.getObjectUrl();
+  if (f.length > 0) {
+    writer.writeString(
+      17,
+      f
     );
   }
 };
@@ -1813,6 +1825,24 @@ proto.ocr_service.ExtractResponse.prototype.clearCategory = function() {
  */
 proto.ocr_service.ExtractResponse.prototype.hasCategory = function() {
   return jspb.Message.getField(this, 16) != null;
+};
+
+
+/**
+ * optional string object_url = 17;
+ * @return {string}
+ */
+proto.ocr_service.ExtractResponse.prototype.getObjectUrl = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 17, ""));
+};
+
+
+/**
+ * @param {string} value
+ * @return {!proto.ocr_service.ExtractResponse} returns this
+ */
+proto.ocr_service.ExtractResponse.prototype.setObjectUrl = function(value) {
+  return jspb.Message.setProto3StringField(this, 17, value);
 };
 
 

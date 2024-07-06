@@ -183,6 +183,9 @@ export class ExtractResponse extends jspb.Message {
   hasCategory(): boolean;
   clearCategory(): ExtractResponse;
 
+  getObjectUrl(): string;
+  setObjectUrl(value: string): ExtractResponse;
+
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): ExtractResponse.AsObject;
   static toObject(includeInstance: boolean, msg: ExtractResponse): ExtractResponse.AsObject;
@@ -209,6 +212,7 @@ export namespace ExtractResponse {
     country?: ExpenseField.AsObject,
     zipCode?: ExpenseField.AsObject,
     category?: ExpenseField.AsObject,
+    objectUrl: string,
   }
 }
 

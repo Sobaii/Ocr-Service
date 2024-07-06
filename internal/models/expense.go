@@ -8,21 +8,21 @@ type ExpenseField struct {
 
 // Expense represents the details of an expense
 type Expense struct {
-	FilePage            ExpenseField `json:"FILE_PAGE"`
-	FileName            ExpenseField `json:"FILE_NAME"`
-	InvoiceReceiptDate  ExpenseField `json:"INVOICE_RECEIPT_DATE"`
-	VendorName          ExpenseField `json:"VENDOR_NAME"`
-	VendorAddress       ExpenseField `json:"VENDOR_ADDRESS"`
-	Total               ExpenseField `json:"TOTAL"`
-	Subtotal            ExpenseField `json:"SUBTOTAL"`
-	Tax                 ExpenseField `json:"TAX"`
-	VendorPhone         ExpenseField `json:"VENDOR_PHONE"`
-	Street              ExpenseField `json:"STREET"`
-	Gratuity            ExpenseField `json:"GRATUITY"`
-	City                ExpenseField `json:"CITY"`
-	State               ExpenseField `json:"STATE"`
-	Country             ExpenseField `json:"COUNTRY"`
-	ZipCode             ExpenseField `json:"ZIP_CODE"`
-	Category            ExpenseField `json:"CATEGORY"`
+	FilePage           ExpenseField `json:"FILE_PAGE"`
+	FileName           ExpenseField `json:"FILE_NAME"`
+	InvoiceReceiptDate ExpenseField `json:"INVOICE_RECEIPT_DATE"`
+	VendorName         ExpenseField `json:"VENDOR_NAME"`
+	VendorAddress      ExpenseField `json:"VENDOR_ADDRESS"`
+	Total              ExpenseField `json:"TOTAL"`
+	Subtotal           ExpenseField `json:"SUBTOTAL"`
+	Tax                ExpenseField `json:"TAX"`
+	VendorPhone        ExpenseField `json:"VENDOR_PHONE"`
+	Street             ExpenseField `json:"STREET"`
+	Gratuity           ExpenseField `json:"GRATUITY"`
+	City               ExpenseField `json:"CITY"`
+	State              ExpenseField `json:"STATE"`
+	Country            ExpenseField `json:"COUNTRY"`
+	ZipCode            ExpenseField `json:"ZIP_CODE"`
+	Category           ExpenseField `json:"CATEGORY"`
+	ObjectUrl          string       `json:"object_url"`
 }
-
