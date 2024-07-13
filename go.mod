@@ -28,8 +28,10 @@ require (
 	github.com/aws/smithy-go v1.20.3 // indirect
 	github.com/cenkalti/backoff/v4 v4.1.1 // indirect
 	github.com/desertbit/timer v0.0.0-20180107155436-c41aec40b27f // indirect
+	github.com/gen2brain/go-fitz v1.23.7 // indirect
 	github.com/klauspost/compress v1.11.7 // indirect
 	github.com/rs/cors v1.7.0 // indirect
+	github.com/sashabaranov/go-openai v1.26.2 // indirect
 	nhooyr.io/websocket v1.8.6 // indirect
 )
 

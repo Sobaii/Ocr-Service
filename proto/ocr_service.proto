@@ -4,20 +4,35 @@ option go_package = "internal/proto";
 
 package ocr_service;
 
-message TestRequest {
-    string message = 1;
+enum MimeType {
+    MIME_TYPE_UNSPECIFIED = 0;
+    IMAGE_JPEG = 1;
+    IMAGE_PNG = 2;
+    APPLICATION_PDF = 3;
 }
 
-message TestResponse {
-    string response = 1;
-}
-
-message ExtractRequest {
-    bytes binary = 1;
+message ExtractFileRequest {
+    string email_address = 1;
+    string folder_name = 2;
+    bytes binary = 3;
+    MimeType mime_type = 4;
 };
 
-message SearchRequest {
-    string index = 1;
+message SearchFileRequest {
+    string email_address = 1;
+    string folder_name = 2;
+    string index = 3;
+    string query = 4;
+}
+
+message FolderCreationRequest {
+    string email_address = 1;
+    string full_name = 2;
+    string folder_name = 3;
+}
+
+message FolderSearchRequest {
+    string email_address = 1;
     string query = 2;
 }
 
@@ -26,32 +41,69 @@ message ExpenseField {
     double confidence = 2;
 }
 
-message ExtractResponse {
-    ExpenseField FILE_PAGE = 1;
-    ExpenseField FILE_NAME = 2;
-    ExpenseField INVOICE_RECEIPT_DATE = 3;
-    ExpenseField VENDOR_NAME = 4;
-    ExpenseField VENDOR_ADDRESS = 5;
-    ExpenseField TOTAL = 6;
-    ExpenseField SUBTOTAL = 7;
-    ExpenseField TAX = 8;
-    ExpenseField VENDOR_PHONE = 9;
-    ExpenseField STREET = 10;
-    ExpenseField GRATUITY = 11;
-    ExpenseField CITY = 12;
-    ExpenseField STATE = 13;
-    ExpenseField COUNTRY = 14;
-    ExpenseField ZIP_CODE = 15;
-    ExpenseField CATEGORY = 16;
+message FileExtract {
+    ExpenseField file_page = 1;
+    ExpenseField file_name = 2;
+    ExpenseField invoice_receipt_date = 3;
+    ExpenseField vendor_name = 4;
+    ExpenseField vendor_address = 5;
+    ExpenseField total = 6;
+    ExpenseField subtotal = 7;
+    ExpenseField tax = 8;
+    ExpenseField vendor_phone = 9;
+    ExpenseField street = 10;
+    ExpenseField gratuity = 11;
+    ExpenseField city = 12;
+    ExpenseField state = 13;
+    ExpenseField country = 14;
+    ExpenseField zip_code = 15;
+    ExpenseField category = 16;
     string object_url = 17;
+    string preview_url = 18;
+}
+
+message ExpenseItem {
+    string folder_name = 1;
+    FileExtract data = 2;
 }
 
 message Expenses {
-    repeated ExtractResponse info = 1;
+    repeated ExpenseItem info = 1;
+}
+
+message FolderSearchResponse {
+    bool folder_found = 1;
+    string action_description = 2;
+    repeated string folders = 3;
+}
+
+message FolderCreationResponse {
+    bool folder_created = 1;
+    string action_description = 2;
+    string email_address = 3;
+    string full_name = 4;
+    string folder_name = 5;
+}
+
+message SearchFileResponse {
+    bool file_found = 1;
+    string action_description = 2;
+    string email_address = 3;
+    string folder_name = 4;
+    Expenses expenses = 5;
+}
+
+message ExtractFileResponse {
+    bool file_extracted = 1;
+    string action_description = 2;
+    string email_address = 3;
+    string folder_name = 4;
+    ExpenseItem file = 5;
 }
 
 service OcrService {
-    rpc TestConnection (TestRequest) returns (TestResponse);
-    rpc SearchFileData (SearchRequest) returns (Expenses);
-    rpc ExtractFileData (ExtractRequest) returns (ExtractResponse);
+    rpc CreateFolder (FolderCreationRequest) returns (FolderCreationResponse);
+    rpc SearchFolders (FolderSearchRequest) returns (FolderSearchResponse);
+    rpc SearchFileData (SearchFileRequest) returns (SearchFileResponse);
+    rpc ExtractFileData (ExtractFileRequest) returns (ExtractFileResponse);
 }

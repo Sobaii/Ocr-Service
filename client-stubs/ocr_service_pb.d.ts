@@ -2,80 +2,112 @@ import * as jspb from 'google-protobuf'
 
 
 
-export class TestRequest extends jspb.Message {
-  getMessage(): string;
-  setMessage(value: string): TestRequest;
+export class ExtractFileRequest extends jspb.Message {
+  getEmailAddress(): string;
+  setEmailAddress(value: string): ExtractFileRequest;
 
-  serializeBinary(): Uint8Array;
-  toObject(includeInstance?: boolean): TestRequest.AsObject;
-  static toObject(includeInstance: boolean, msg: TestRequest): TestRequest.AsObject;
-  static serializeBinaryToWriter(message: TestRequest, writer: jspb.BinaryWriter): void;
-  static deserializeBinary(bytes: Uint8Array): TestRequest;
-  static deserializeBinaryFromReader(message: TestRequest, reader: jspb.BinaryReader): TestRequest;
-}
+  getFolderName(): string;
+  setFolderName(value: string): ExtractFileRequest;
 
-export namespace TestRequest {
-  export type AsObject = {
-    message: string,
-  }
-}
-
-export class TestResponse extends jspb.Message {
-  getResponse(): string;
-  setResponse(value: string): TestResponse;
-
-  serializeBinary(): Uint8Array;
-  toObject(includeInstance?: boolean): TestResponse.AsObject;
-  static toObject(includeInstance: boolean, msg: TestResponse): TestResponse.AsObject;
-  static serializeBinaryToWriter(message: TestResponse, writer: jspb.BinaryWriter): void;
-  static deserializeBinary(bytes: Uint8Array): TestResponse;
-  static deserializeBinaryFromReader(message: TestResponse, reader: jspb.BinaryReader): TestResponse;
-}
-
-export namespace TestResponse {
-  export type AsObject = {
-    response: string,
-  }
-}
-
-export class ExtractRequest extends jspb.Message {
   getBinary(): Uint8Array | string;
   getBinary_asU8(): Uint8Array;
   getBinary_asB64(): string;
-  setBinary(value: Uint8Array | string): ExtractRequest;
+  setBinary(value: Uint8Array | string): ExtractFileRequest;
+
+  getMimeType(): MimeType;
+  setMimeType(value: MimeType): ExtractFileRequest;
 
   serializeBinary(): Uint8Array;
-  toObject(includeInstance?: boolean): ExtractRequest.AsObject;
-  static toObject(includeInstance: boolean, msg: ExtractRequest): ExtractRequest.AsObject;
-  static serializeBinaryToWriter(message: ExtractRequest, writer: jspb.BinaryWriter): void;
-  static deserializeBinary(bytes: Uint8Array): ExtractRequest;
-  static deserializeBinaryFromReader(message: ExtractRequest, reader: jspb.BinaryReader): ExtractRequest;
+  toObject(includeInstance?: boolean): ExtractFileRequest.AsObject;
+  static toObject(includeInstance: boolean, msg: ExtractFileRequest): ExtractFileRequest.AsObject;
+  static serializeBinaryToWriter(message: ExtractFileRequest, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): ExtractFileRequest;
+  static deserializeBinaryFromReader(message: ExtractFileRequest, reader: jspb.BinaryReader): ExtractFileRequest;
 }
 
-export namespace ExtractRequest {
+export namespace ExtractFileRequest {
   export type AsObject = {
+    emailAddress: string,
+    folderName: string,
     binary: Uint8Array | string,
+    mimeType: MimeType,
   }
 }
 
-export class SearchRequest extends jspb.Message {
+export class SearchFileRequest extends jspb.Message {
+  getEmailAddress(): string;
+  setEmailAddress(value: string): SearchFileRequest;
+
+  getFolderName(): string;
+  setFolderName(value: string): SearchFileRequest;
+
   getIndex(): string;
-  setIndex(value: string): SearchRequest;
+  setIndex(value: string): SearchFileRequest;
 
   getQuery(): string;
-  setQuery(value: string): SearchRequest;
+  setQuery(value: string): SearchFileRequest;
 
   serializeBinary(): Uint8Array;
-  toObject(includeInstance?: boolean): SearchRequest.AsObject;
-  static toObject(includeInstance: boolean, msg: SearchRequest): SearchRequest.AsObject;
-  static serializeBinaryToWriter(message: SearchRequest, writer: jspb.BinaryWriter): void;
-  static deserializeBinary(bytes: Uint8Array): SearchRequest;
-  static deserializeBinaryFromReader(message: SearchRequest, reader: jspb.BinaryReader): SearchRequest;
+  toObject(includeInstance?: boolean): SearchFileRequest.AsObject;
+  static toObject(includeInstance: boolean, msg: SearchFileRequest): SearchFileRequest.AsObject;
+  static serializeBinaryToWriter(message: SearchFileRequest, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): SearchFileRequest;
+  static deserializeBinaryFromReader(message: SearchFileRequest, reader: jspb.BinaryReader): SearchFileRequest;
 }
 
-export namespace SearchRequest {
+export namespace SearchFileRequest {
   export type AsObject = {
+    emailAddress: string,
+    folderName: string,
     index: string,
+    query: string,
+  }
+}
+
+export class FolderCreationRequest extends jspb.Message {
+  getEmailAddress(): string;
+  setEmailAddress(value: string): FolderCreationRequest;
+
+  getFullName(): string;
+  setFullName(value: string): FolderCreationRequest;
+
+  getFolderName(): string;
+  setFolderName(value: string): FolderCreationRequest;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): FolderCreationRequest.AsObject;
+  static toObject(includeInstance: boolean, msg: FolderCreationRequest): FolderCreationRequest.AsObject;
+  static serializeBinaryToWriter(message: FolderCreationRequest, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): FolderCreationRequest;
+  static deserializeBinaryFromReader(message: FolderCreationRequest, reader: jspb.BinaryReader): FolderCreationRequest;
+}
+
+export namespace FolderCreationRequest {
+  export type AsObject = {
+    emailAddress: string,
+    fullName: string,
+    folderName: string,
+  }
+}
+
+export class FolderSearchRequest extends jspb.Message {
+  getEmailAddress(): string;
+  setEmailAddress(value: string): FolderSearchRequest;
+
+  getQuery(): string;
+  setQuery(value: string): FolderSearchRequest;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): FolderSearchRequest.AsObject;
+  static toObject(includeInstance: boolean, msg: FolderSearchRequest): FolderSearchRequest.AsObject;
+  static serializeBinaryToWriter(message: FolderSearchRequest, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): FolderSearchRequest;
+  static deserializeBinaryFromReader(message: FolderSearchRequest, reader: jspb.BinaryReader): FolderSearchRequest;
+}
+
+export namespace FolderSearchRequest {
+  export type AsObject = {
+    emailAddress: string,
     query: string,
   }
 }
@@ -102,99 +134,102 @@ export namespace ExpenseField {
   }
 }
 
-export class ExtractResponse extends jspb.Message {
+export class FileExtract extends jspb.Message {
   getFilePage(): ExpenseField | undefined;
-  setFilePage(value?: ExpenseField): ExtractResponse;
+  setFilePage(value?: ExpenseField): FileExtract;
   hasFilePage(): boolean;
-  clearFilePage(): ExtractResponse;
+  clearFilePage(): FileExtract;
 
   getFileName(): ExpenseField | undefined;
-  setFileName(value?: ExpenseField): ExtractResponse;
+  setFileName(value?: ExpenseField): FileExtract;
   hasFileName(): boolean;
-  clearFileName(): ExtractResponse;
+  clearFileName(): FileExtract;
 
   getInvoiceReceiptDate(): ExpenseField | undefined;
-  setInvoiceReceiptDate(value?: ExpenseField): ExtractResponse;
+  setInvoiceReceiptDate(value?: ExpenseField): FileExtract;
   hasInvoiceReceiptDate(): boolean;
-  clearInvoiceReceiptDate(): ExtractResponse;
+  clearInvoiceReceiptDate(): FileExtract;
 
   getVendorName(): ExpenseField | undefined;
-  setVendorName(value?: ExpenseField): ExtractResponse;
+  setVendorName(value?: ExpenseField): FileExtract;
   hasVendorName(): boolean;
-  clearVendorName(): ExtractResponse;
+  clearVendorName(): FileExtract;
 
   getVendorAddress(): ExpenseField | undefined;
-  setVendorAddress(value?: ExpenseField): ExtractResponse;
+  setVendorAddress(value?: ExpenseField): FileExtract;
   hasVendorAddress(): boolean;
-  clearVendorAddress(): ExtractResponse;
+  clearVendorAddress(): FileExtract;
 
   getTotal(): ExpenseField | undefined;
-  setTotal(value?: ExpenseField): ExtractResponse;
+  setTotal(value?: ExpenseField): FileExtract;
   hasTotal(): boolean;
-  clearTotal(): ExtractResponse;
+  clearTotal(): FileExtract;
 
   getSubtotal(): ExpenseField | undefined;
-  setSubtotal(value?: ExpenseField): ExtractResponse;
+  setSubtotal(value?: ExpenseField): FileExtract;
   hasSubtotal(): boolean;
-  clearSubtotal(): ExtractResponse;
+  clearSubtotal(): FileExtract;
 
   getTax(): ExpenseField | undefined;
-  setTax(value?: ExpenseField): ExtractResponse;
+  setTax(value?: ExpenseField): FileExtract;
   hasTax(): boolean;
-  clearTax(): ExtractResponse;
+  clearTax(): FileExtract;
 
   getVendorPhone(): ExpenseField | undefined;
-  setVendorPhone(value?: ExpenseField): ExtractResponse;
+  setVendorPhone(value?: ExpenseField): FileExtract;
   hasVendorPhone(): boolean;
-  clearVendorPhone(): ExtractResponse;
+  clearVendorPhone(): FileExtract;
 
   getStreet(): ExpenseField | undefined;
-  setStreet(value?: ExpenseField): ExtractResponse;
+  setStreet(value?: ExpenseField): FileExtract;
   hasStreet(): boolean;
-  clearStreet(): ExtractResponse;
+  clearStreet(): FileExtract;
 
   getGratuity(): ExpenseField | undefined;
-  setGratuity(value?: ExpenseField): ExtractResponse;
+  setGratuity(value?: ExpenseField): FileExtract;
   hasGratuity(): boolean;
-  clearGratuity(): ExtractResponse;
+  clearGratuity(): FileExtract;
 
   getCity(): ExpenseField | undefined;
-  setCity(value?: ExpenseField): ExtractResponse;
+  setCity(value?: ExpenseField): FileExtract;
   hasCity(): boolean;
-  clearCity(): ExtractResponse;
+  clearCity(): FileExtract;
 
   getState(): ExpenseField | undefined;
-  setState(value?: ExpenseField): ExtractResponse;
+  setState(value?: ExpenseField): FileExtract;
   hasState(): boolean;
-  clearState(): ExtractResponse;
+  clearState(): FileExtract;
 
   getCountry(): ExpenseField | undefined;
-  setCountry(value?: ExpenseField): ExtractResponse;
+  setCountry(value?: ExpenseField): FileExtract;
   hasCountry(): boolean;
-  clearCountry(): ExtractResponse;
+  clearCountry(): FileExtract;
 
   getZipCode(): ExpenseField | undefined;
-  setZipCode(value?: ExpenseField): ExtractResponse;
+  setZipCode(value?: ExpenseField): FileExtract;
   hasZipCode(): boolean;
-  clearZipCode(): ExtractResponse;
+  clearZipCode(): FileExtract;
 
   getCategory(): ExpenseField | undefined;
-  setCategory(value?: ExpenseField): ExtractResponse;
+  setCategory(value?: ExpenseField): FileExtract;
   hasCategory(): boolean;
-  clearCategory(): ExtractResponse;
+  clearCategory(): FileExtract;
 
   getObjectUrl(): string;
-  setObjectUrl(value: string): ExtractResponse;
+  setObjectUrl(value: string): FileExtract;
+
+  getPreviewUrl(): string;
+  setPreviewUrl(value: string): FileExtract;
 
   serializeBinary(): Uint8Array;
-  toObject(includeInstance?: boolean): ExtractResponse.AsObject;
-  static toObject(includeInstance: boolean, msg: ExtractResponse): ExtractResponse.AsObject;
-  static serializeBinaryToWriter(message: ExtractResponse, writer: jspb.BinaryWriter): void;
-  static deserializeBinary(bytes: Uint8Array): ExtractResponse;
-  static deserializeBinaryFromReader(message: ExtractResponse, reader: jspb.BinaryReader): ExtractResponse;
+  toObject(includeInstance?: boolean): FileExtract.AsObject;
+  static toObject(includeInstance: boolean, msg: FileExtract): FileExtract.AsObject;
+  static serializeBinaryToWriter(message: FileExtract, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): FileExtract;
+  static deserializeBinaryFromReader(message: FileExtract, reader: jspb.BinaryReader): FileExtract;
 }
 
-export namespace ExtractResponse {
+export namespace FileExtract {
   export type AsObject = {
     filePage?: ExpenseField.AsObject,
     fileName?: ExpenseField.AsObject,
@@ -213,14 +248,39 @@ export namespace ExtractResponse {
     zipCode?: ExpenseField.AsObject,
     category?: ExpenseField.AsObject,
     objectUrl: string,
+    previewUrl: string,
+  }
+}
+
+export class ExpenseItem extends jspb.Message {
+  getFolderName(): string;
+  setFolderName(value: string): ExpenseItem;
+
+  getData(): FileExtract | undefined;
+  setData(value?: FileExtract): ExpenseItem;
+  hasData(): boolean;
+  clearData(): ExpenseItem;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): ExpenseItem.AsObject;
+  static toObject(includeInstance: boolean, msg: ExpenseItem): ExpenseItem.AsObject;
+  static serializeBinaryToWriter(message: ExpenseItem, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): ExpenseItem;
+  static deserializeBinaryFromReader(message: ExpenseItem, reader: jspb.BinaryReader): ExpenseItem;
+}
+
+export namespace ExpenseItem {
+  export type AsObject = {
+    folderName: string,
+    data?: FileExtract.AsObject,
   }
 }
 
 export class Expenses extends jspb.Message {
-  getInfoList(): Array<ExtractResponse>;
-  setInfoList(value: Array<ExtractResponse>): Expenses;
+  getInfoList(): Array<ExpenseItem>;
+  setInfoList(value: Array<ExpenseItem>): Expenses;
   clearInfoList(): Expenses;
-  addInfo(value?: ExtractResponse, index?: number): ExtractResponse;
+  addInfo(value?: ExpenseItem, index?: number): ExpenseItem;
 
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): Expenses.AsObject;
@@ -232,7 +292,147 @@ export class Expenses extends jspb.Message {
 
 export namespace Expenses {
   export type AsObject = {
-    infoList: Array<ExtractResponse.AsObject>,
+    infoList: Array<ExpenseItem.AsObject>,
   }
 }
 
+export class FolderSearchResponse extends jspb.Message {
+  getFolderFound(): boolean;
+  setFolderFound(value: boolean): FolderSearchResponse;
+
+  getActionDescription(): string;
+  setActionDescription(value: string): FolderSearchResponse;
+
+  getFoldersList(): Array<string>;
+  setFoldersList(value: Array<string>): FolderSearchResponse;
+  clearFoldersList(): FolderSearchResponse;
+  addFolders(value: string, index?: number): FolderSearchResponse;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): FolderSearchResponse.AsObject;
+  static toObject(includeInstance: boolean, msg: FolderSearchResponse): FolderSearchResponse.AsObject;
+  static serializeBinaryToWriter(message: FolderSearchResponse, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): FolderSearchResponse;
+  static deserializeBinaryFromReader(message: FolderSearchResponse, reader: jspb.BinaryReader): FolderSearchResponse;
+}
+
+export namespace FolderSearchResponse {
+  export type AsObject = {
+    folderFound: boolean,
+    actionDescription: string,
+    foldersList: Array<string>,
+  }
+}
+
+export class FolderCreationResponse extends jspb.Message {
+  getFolderCreated(): boolean;
+  setFolderCreated(value: boolean): FolderCreationResponse;
+
+  getActionDescription(): string;
+  setActionDescription(value: string): FolderCreationResponse;
+
+  getEmailAddress(): string;
+  setEmailAddress(value: string): FolderCreationResponse;
+
+  getFullName(): string;
+  setFullName(value: string): FolderCreationResponse;
+
+  getFolderName(): string;
+  setFolderName(value: string): FolderCreationResponse;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): FolderCreationResponse.AsObject;
+  static toObject(includeInstance: boolean, msg: FolderCreationResponse): FolderCreationResponse.AsObject;
+  static serializeBinaryToWriter(message: FolderCreationResponse, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): FolderCreationResponse;
+  static deserializeBinaryFromReader(message: FolderCreationResponse, reader: jspb.BinaryReader): FolderCreationResponse;
+}
+
+export namespace FolderCreationResponse {
+  export type AsObject = {
+    folderCreated: boolean,
+    actionDescription: string,
+    emailAddress: string,
+    fullName: string,
+    folderName: string,
+  }
+}
+
+export class SearchFileResponse extends jspb.Message {
+  getFileFound(): boolean;
+  setFileFound(value: boolean): SearchFileResponse;
+
+  getActionDescription(): string;
+  setActionDescription(value: string): SearchFileResponse;
+
+  getEmailAddress(): string;
+  setEmailAddress(value: string): SearchFileResponse;
+
+  getFolderName(): string;
+  setFolderName(value: string): SearchFileResponse;
+
+  getExpenses(): Expenses | undefined;
+  setExpenses(value?: Expenses): SearchFileResponse;
+  hasExpenses(): boolean;
+  clearExpenses(): SearchFileResponse;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): SearchFileResponse.AsObject;
+  static toObject(includeInstance: boolean, msg: SearchFileResponse): SearchFileResponse.AsObject;
+  static serializeBinaryToWriter(message: SearchFileResponse, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): SearchFileResponse;
+  static deserializeBinaryFromReader(message: SearchFileResponse, reader: jspb.BinaryReader): SearchFileResponse;
+}
+
+export namespace SearchFileResponse {
+  export type AsObject = {
+    fileFound: boolean,
+    actionDescription: string,
+    emailAddress: string,
+    folderName: string,
+    expenses?: Expenses.AsObject,
+  }
+}
+
+export class ExtractFileResponse extends jspb.Message {
+  getFileExtracted(): boolean;
+  setFileExtracted(value: boolean): ExtractFileResponse;
+
+  getActionDescription(): string;
+  setActionDescription(value: string): ExtractFileResponse;
+
+  getEmailAddress(): string;
+  setEmailAddress(value: string): ExtractFileResponse;
+
+  getFolderName(): string;
+  setFolderName(value: string): ExtractFileResponse;
+
+  getFile(): ExpenseItem | undefined;
+  setFile(value?: ExpenseItem): ExtractFileResponse;
+  hasFile(): boolean;
+  clearFile(): ExtractFileResponse;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): ExtractFileResponse.AsObject;
+  static toObject(includeInstance: boolean, msg: ExtractFileResponse): ExtractFileResponse.AsObject;
+  static serializeBinaryToWriter(message: ExtractFileResponse, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): ExtractFileResponse;
+  static deserializeBinaryFromReader(message: ExtractFileResponse, reader: jspb.BinaryReader): ExtractFileResponse;
+}
+
+export namespace ExtractFileResponse {
+  export type AsObject = {
+    fileExtracted: boolean,
+    actionDescription: string,
+    emailAddress: string,
+    folderName: string,
+    file?: ExpenseItem.AsObject,
+  }
+}
+
+export enum MimeType { 
+  MIME_TYPE_UNSPECIFIED = 0,
+  IMAGE_JPEG = 1,
+  IMAGE_PNG = 2,
+  APPLICATION_PDF = 3,
+}

@@ -39,75 +39,118 @@ export class OcrServiceClient {
     this.options_ = options;
   }
 
-  methodDescriptorTestConnection = new grpcWeb.MethodDescriptor(
-    '/ocr_service.OcrService/TestConnection',
+  methodDescriptorCreateFolder = new grpcWeb.MethodDescriptor(
+    '/ocr_service.OcrService/CreateFolder',
     grpcWeb.MethodType.UNARY,
-    ocr_service_pb.TestRequest,
-    ocr_service_pb.TestResponse,
-    (request: ocr_service_pb.TestRequest) => {
+    ocr_service_pb.FolderCreationRequest,
+    ocr_service_pb.FolderCreationResponse,
+    (request: ocr_service_pb.FolderCreationRequest) => {
       return request.serializeBinary();
     },
-    ocr_service_pb.TestResponse.deserializeBinary
+    ocr_service_pb.FolderCreationResponse.deserializeBinary
   );
 
-  testConnection(
-    request: ocr_service_pb.TestRequest,
-    metadata?: grpcWeb.Metadata | null): Promise<ocr_service_pb.TestResponse>;
+  createFolder(
+    request: ocr_service_pb.FolderCreationRequest,
+    metadata?: grpcWeb.Metadata | null): Promise<ocr_service_pb.FolderCreationResponse>;
 
-  testConnection(
-    request: ocr_service_pb.TestRequest,
+  createFolder(
+    request: ocr_service_pb.FolderCreationRequest,
     metadata: grpcWeb.Metadata | null,
     callback: (err: grpcWeb.RpcError,
-               response: ocr_service_pb.TestResponse) => void): grpcWeb.ClientReadableStream<ocr_service_pb.TestResponse>;
+               response: ocr_service_pb.FolderCreationResponse) => void): grpcWeb.ClientReadableStream<ocr_service_pb.FolderCreationResponse>;
 
-  testConnection(
-    request: ocr_service_pb.TestRequest,
+  createFolder(
+    request: ocr_service_pb.FolderCreationRequest,
     metadata?: grpcWeb.Metadata | null,
     callback?: (err: grpcWeb.RpcError,
-               response: ocr_service_pb.TestResponse) => void) {
+               response: ocr_service_pb.FolderCreationResponse) => void) {
     if (callback !== undefined) {
       return this.client_.rpcCall(
         this.hostname_ +
-          '/ocr_service.OcrService/TestConnection',
+          '/ocr_service.OcrService/CreateFolder',
         request,
         metadata || {},
-        this.methodDescriptorTestConnection,
+        this.methodDescriptorCreateFolder,
         callback);
     }
     return this.client_.unaryCall(
     this.hostname_ +
-      '/ocr_service.OcrService/TestConnection',
+      '/ocr_service.OcrService/CreateFolder',
     request,
     metadata || {},
-    this.methodDescriptorTestConnection);
+    this.methodDescriptorCreateFolder);
+  }
+
+  methodDescriptorSearchFolders = new grpcWeb.MethodDescriptor(
+    '/ocr_service.OcrService/SearchFolders',
+    grpcWeb.MethodType.UNARY,
+    ocr_service_pb.FolderSearchRequest,
+    ocr_service_pb.FolderSearchResponse,
+    (request: ocr_service_pb.FolderSearchRequest) => {
+      return request.serializeBinary();
+    },
+    ocr_service_pb.FolderSearchResponse.deserializeBinary
+  );
+
+  searchFolders(
+    request: ocr_service_pb.FolderSearchRequest,
+    metadata?: grpcWeb.Metadata | null): Promise<ocr_service_pb.FolderSearchResponse>;
+
+  searchFolders(
+    request: ocr_service_pb.FolderSearchRequest,
+    metadata: grpcWeb.Metadata | null,
+    callback: (err: grpcWeb.RpcError,
+               response: ocr_service_pb.FolderSearchResponse) => void): grpcWeb.ClientReadableStream<ocr_service_pb.FolderSearchResponse>;
+
+  searchFolders(
+    request: ocr_service_pb.FolderSearchRequest,
+    metadata?: grpcWeb.Metadata | null,
+    callback?: (err: grpcWeb.RpcError,
+               response: ocr_service_pb.FolderSearchResponse) => void) {
+    if (callback !== undefined) {
+      return this.client_.rpcCall(
+        this.hostname_ +
+          '/ocr_service.OcrService/SearchFolders',
+        request,
+        metadata || {},
+        this.methodDescriptorSearchFolders,
+        callback);
+    }
+    return this.client_.unaryCall(
+    this.hostname_ +
+      '/ocr_service.OcrService/SearchFolders',
+    request,
+    metadata || {},
+    this.methodDescriptorSearchFolders);
   }
 
   methodDescriptorSearchFileData = new grpcWeb.MethodDescriptor(
     '/ocr_service.OcrService/SearchFileData',
     grpcWeb.MethodType.UNARY,
-    ocr_service_pb.SearchRequest,
-    ocr_service_pb.Expenses,
-    (request: ocr_service_pb.SearchRequest) => {
+    ocr_service_pb.SearchFileRequest,
+    ocr_service_pb.SearchFileResponse,
+    (request: ocr_service_pb.SearchFileRequest) => {
       return request.serializeBinary();
     },
-    ocr_service_pb.Expenses.deserializeBinary
+    ocr_service_pb.SearchFileResponse.deserializeBinary
   );
 
   searchFileData(
-    request: ocr_service_pb.SearchRequest,
-    metadata?: grpcWeb.Metadata | null): Promise<ocr_service_pb.Expenses>;
+    request: ocr_service_pb.SearchFileRequest,
+    metadata?: grpcWeb.Metadata | null): Promise<ocr_service_pb.SearchFileResponse>;
 
   searchFileData(
-    request: ocr_service_pb.SearchRequest,
+    request: ocr_service_pb.SearchFileRequest,
     metadata: grpcWeb.Metadata | null,
     callback: (err: grpcWeb.RpcError,
-               response: ocr_service_pb.Expenses) => void): grpcWeb.ClientReadableStream<ocr_service_pb.Expenses>;
+               response: ocr_service_pb.SearchFileResponse) => void): grpcWeb.ClientReadableStream<ocr_service_pb.SearchFileResponse>;
 
   searchFileData(
-    request: ocr_service_pb.SearchRequest,
+    request: ocr_service_pb.SearchFileRequest,
     metadata?: grpcWeb.Metadata | null,
     callback?: (err: grpcWeb.RpcError,
-               response: ocr_service_pb.Expenses) => void) {
+               response: ocr_service_pb.SearchFileResponse) => void) {
     if (callback !== undefined) {
       return this.client_.rpcCall(
         this.hostname_ +
@@ -128,29 +171,29 @@ export class OcrServiceClient {
   methodDescriptorExtractFileData = new grpcWeb.MethodDescriptor(
     '/ocr_service.OcrService/ExtractFileData',
     grpcWeb.MethodType.UNARY,
-    ocr_service_pb.ExtractRequest,
-    ocr_service_pb.ExtractResponse,
-    (request: ocr_service_pb.ExtractRequest) => {
+    ocr_service_pb.ExtractFileRequest,
+    ocr_service_pb.ExtractFileResponse,
+    (request: ocr_service_pb.ExtractFileRequest) => {
       return request.serializeBinary();
     },
-    ocr_service_pb.ExtractResponse.deserializeBinary
+    ocr_service_pb.ExtractFileResponse.deserializeBinary
   );
 
   extractFileData(
-    request: ocr_service_pb.ExtractRequest,
-    metadata?: grpcWeb.Metadata | null): Promise<ocr_service_pb.ExtractResponse>;
+    request: ocr_service_pb.ExtractFileRequest,
+    metadata?: grpcWeb.Metadata | null): Promise<ocr_service_pb.ExtractFileResponse>;
 
   extractFileData(
-    request: ocr_service_pb.ExtractRequest,
+    request: ocr_service_pb.ExtractFileRequest,
     metadata: grpcWeb.Metadata | null,
     callback: (err: grpcWeb.RpcError,
-               response: ocr_service_pb.ExtractResponse) => void): grpcWeb.ClientReadableStream<ocr_service_pb.ExtractResponse>;
+               response: ocr_service_pb.ExtractFileResponse) => void): grpcWeb.ClientReadableStream<ocr_service_pb.ExtractFileResponse>;
 
   extractFileData(
-    request: ocr_service_pb.ExtractRequest,
+    request: ocr_service_pb.ExtractFileRequest,
     metadata?: grpcWeb.Metadata | null,
     callback?: (err: grpcWeb.RpcError,
-               response: ocr_service_pb.ExtractResponse) => void) {
+               response: ocr_service_pb.ExtractFileResponse) => void) {
     if (callback !== undefined) {
       return this.client_.rpcCall(
         this.hostname_ +

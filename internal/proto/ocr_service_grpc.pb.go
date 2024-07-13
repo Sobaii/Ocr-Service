@@ -19,7 +19,8 @@ import (
 const _ = grpc.SupportPackageIsVersion8
 
 const (
-	OcrService_TestConnection_FullMethodName  = "/ocr_service.OcrService/TestConnection"
+	OcrService_CreateFolder_FullMethodName    = "/ocr_service.OcrService/CreateFolder"
+	OcrService_SearchFolders_FullMethodName   = "/ocr_service.OcrService/SearchFolders"
 	OcrService_SearchFileData_FullMethodName  = "/ocr_service.OcrService/SearchFileData"
 	OcrService_ExtractFileData_FullMethodName = "/ocr_service.OcrService/ExtractFileData"
 )
@@ -28,9 +29,10 @@ const (
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type OcrServiceClient interface {
-	TestConnection(ctx context.Context, in *TestRequest, opts ...grpc.CallOption) (*TestResponse, error)
-	SearchFileData(ctx context.Context, in *SearchRequest, opts ...grpc.CallOption) (*Expenses, error)
-	ExtractFileData(ctx context.Context, in *ExtractRequest, opts ...grpc.CallOption) (*ExtractResponse, error)
+	CreateFolder(ctx context.Context, in *FolderCreationRequest, opts ...grpc.CallOption) (*FolderCreationResponse, error)
+	SearchFolders(ctx context.Context, in *FolderSearchRequest, opts ...grpc.CallOption) (*FolderSearchResponse, error)
+	SearchFileData(ctx context.Context, in *SearchFileRequest, opts ...grpc.CallOption) (*SearchFileResponse, error)
+	ExtractFileData(ctx context.Context, in *ExtractFileRequest, opts ...grpc.CallOption) (*ExtractFileResponse, error)
 }
 
 type ocrServiceClient struct {
@@ -41,19 +43,29 @@ func NewOcrServiceClient(cc grpc.ClientConnInterface) OcrServiceClient {
 	return &ocrServiceClient{cc}
 }
 
-func (c *ocrServiceClient) TestConnection(ctx context.Context, in *TestRequest, opts ...grpc.CallOption) (*TestResponse, error) {
+func (c *ocrServiceClient) CreateFolder(ctx context.Context, in *FolderCreationRequest, opts ...grpc.CallOption) (*FolderCreationResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(TestResponse)
-	err := c.cc.Invoke(ctx, OcrService_TestConnection_FullMethodName, in, out, cOpts...)
+	out := new(FolderCreationResponse)
+	err := c.cc.Invoke(ctx, OcrService_CreateFolder_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *ocrServiceClient) SearchFileData(ctx context.Context, in *SearchRequest, opts ...grpc.CallOption) (*Expenses, error) {
+func (c *ocrServiceClient) SearchFolders(ctx context.Context, in *FolderSearchRequest, opts ...grpc.CallOption) (*FolderSearchResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(Expenses)
+	out := new(FolderSearchResponse)
+	err := c.cc.Invoke(ctx, OcrService_SearchFolders_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *ocrServiceClient) SearchFileData(ctx context.Context, in *SearchFileRequest, opts ...grpc.CallOption) (*SearchFileResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(SearchFileResponse)
 	err := c.cc.Invoke(ctx, OcrService_SearchFileData_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
@@ -61,9 +73,9 @@ func (c *ocrServiceClient) SearchFileData(ctx context.Context, in *SearchRequest
 	return out, nil
 }
 
-func (c *ocrServiceClient) ExtractFileData(ctx context.Context, in *ExtractRequest, opts ...grpc.CallOption) (*ExtractResponse, error) {
+func (c *ocrServiceClient) ExtractFileData(ctx context.Context, in *ExtractFileRequest, opts ...grpc.CallOption) (*ExtractFileResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(ExtractResponse)
+	out := new(ExtractFileResponse)
 	err := c.cc.Invoke(ctx, OcrService_ExtractFileData_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
@@ -75,9 +87,10 @@ func (c *ocrServiceClient) ExtractFileData(ctx context.Context, in *ExtractReque
 // All implementations must embed UnimplementedOcrServiceServer
 // for forward compatibility
 type OcrServiceServer interface {
-	TestConnection(context.Context, *TestRequest) (*TestResponse, error)
-	SearchFileData(context.Context, *SearchRequest) (*Expenses, error)
-	ExtractFileData(context.Context, *ExtractRequest) (*ExtractResponse, error)
+	CreateFolder(context.Context, *FolderCreationRequest) (*FolderCreationResponse, error)
+	SearchFolders(context.Context, *FolderSearchRequest) (*FolderSearchResponse, error)
+	SearchFileData(context.Context, *SearchFileRequest) (*SearchFileResponse, error)
+	ExtractFileData(context.Context, *ExtractFileRequest) (*ExtractFileResponse, error)
 	mustEmbedUnimplementedOcrServiceServer()
 }
 
@@ -85,13 +98,16 @@ type OcrServiceServer interface {
 type UnimplementedOcrServiceServer struct {
 }
 
-func (UnimplementedOcrServiceServer) TestConnection(context.Context, *TestRequest) (*TestResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method TestConnection not implemented")
+func (UnimplementedOcrServiceServer) CreateFolder(context.Context, *FolderCreationRequest) (*FolderCreationResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateFolder not implemented")
 }
-func (UnimplementedOcrServiceServer) SearchFileData(context.Context, *SearchRequest) (*Expenses, error) {
+func (UnimplementedOcrServiceServer) SearchFolders(context.Context, *FolderSearchRequest) (*FolderSearchResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SearchFolders not implemented")
+}
+func (UnimplementedOcrServiceServer) SearchFileData(context.Context, *SearchFileRequest) (*SearchFileResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SearchFileData not implemented")
 }
-func (UnimplementedOcrServiceServer) ExtractFileData(context.Context, *ExtractRequest) (*ExtractResponse, error) {
+func (UnimplementedOcrServiceServer) ExtractFileData(context.Context, *ExtractFileRequest) (*ExtractFileResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ExtractFileData not implemented")
 }
 func (UnimplementedOcrServiceServer) mustEmbedUnimplementedOcrServiceServer() {}
@@ -107,26 +123,44 @@ func RegisterOcrServiceServer(s grpc.ServiceRegistrar, srv OcrServiceServer) {
 	s.RegisterService(&OcrService_ServiceDesc, srv)
 }
 
-func _OcrService_TestConnection_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(TestRequest)
+func _OcrService_CreateFolder_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(FolderCreationRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(OcrServiceServer).TestConnection(ctx, in)
+		return srv.(OcrServiceServer).CreateFolder(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: OcrService_TestConnection_FullMethodName,
+		FullMethod: OcrService_CreateFolder_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(OcrServiceServer).TestConnection(ctx, req.(*TestRequest))
+		return srv.(OcrServiceServer).CreateFolder(ctx, req.(*FolderCreationRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _OcrService_SearchFolders_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(FolderSearchRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(OcrServiceServer).SearchFolders(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: OcrService_SearchFolders_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(OcrServiceServer).SearchFolders(ctx, req.(*FolderSearchRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
 func _OcrService_SearchFileData_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(SearchRequest)
+	in := new(SearchFileRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -138,13 +172,13 @@ func _OcrService_SearchFileData_Handler(srv interface{}, ctx context.Context, de
 		FullMethod: OcrService_SearchFileData_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(OcrServiceServer).SearchFileData(ctx, req.(*SearchRequest))
+		return srv.(OcrServiceServer).SearchFileData(ctx, req.(*SearchFileRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
 func _OcrService_ExtractFileData_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ExtractRequest)
+	in := new(ExtractFileRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -156,7 +190,7 @@ func _OcrService_ExtractFileData_Handler(srv interface{}, ctx context.Context, d
 		FullMethod: OcrService_ExtractFileData_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(OcrServiceServer).ExtractFileData(ctx, req.(*ExtractRequest))
+		return srv.(OcrServiceServer).ExtractFileData(ctx, req.(*ExtractFileRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -169,8 +203,12 @@ var OcrService_ServiceDesc = grpc.ServiceDesc{
 	HandlerType: (*OcrServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "TestConnection",
-			Handler:    _OcrService_TestConnection_Handler,
+			MethodName: "CreateFolder",
+			Handler:    _OcrService_CreateFolder_Handler,
+		},
+		{
+			MethodName: "SearchFolders",
+			Handler:    _OcrService_SearchFolders_Handler,
 		},
 		{
 			MethodName: "SearchFileData",

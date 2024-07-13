@@ -8,6 +8,7 @@ import (
 	"log"
 	"ocr-service-dev/internal/models"
 	pb "ocr-service-dev/internal/proto"
+	"ocr-service-dev/internal/services"
 	"ocr-service-dev/internal/utils"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
@@ -23,12 +24,103 @@ type OcrServiceHandler struct {
 	S3Client       *s3.Client
 }
 
-// test connection
-func (h *OcrServiceHandler) TestConnection(ctx context.Context, req *pb.TestRequest) (*pb.TestResponse, error) {
-	return &pb.TestResponse{Response: "Connection successful. Request message is: " + req.GetMessage()}, nil
+func (h *OcrServiceHandler) CreateFolder(ctx context.Context, req *pb.FolderCreationRequest) (*pb.FolderCreationResponse, error) {
+
+	rclient, err := utils.InitializeRedisClient()
+	if err != nil {
+		return nil, err
+	}
+	defer rclient.Close()
+
+	userHashKey := fmt.Sprintf("user:%s", req.EmailAddress)
+	foldersKey := fmt.Sprintf("%s:folders", userHashKey)
+
+	userExistsCmd := rclient.B().Exists().Key(userHashKey).Build()
+	existsResp, err := rclient.Do(ctx, userExistsCmd).AsInt64()
+	if err != nil {
+		return nil, err
+	}
+	if existsResp == 0 {
+		// create a new user hash
+		createUserCmd := rclient.B().Hset().Key(userHashKey).FieldValue().FieldValue("name", req.FullName).Build()
+
+		err := rclient.Do(ctx, createUserCmd).Error()
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	// check if folder exists
+	folderExistsCmd := rclient.B().Sismember().Key(foldersKey).Member(req.FolderName).Build()
+	folderExistsResp, err := rclient.Do(ctx, folderExistsCmd).AsInt64()
+	if err != nil {
+		return nil, err
+	}
+	if folderExistsResp == 1 {
+		return &pb.FolderCreationResponse{
+			FolderCreated:     false,
+			ActionDescription: "Folder already exists. Try again with a different folder name.",
+			EmailAddress:      "",
+			FullName:          "",
+			FolderName:        "",
+		}, nil
+	}
+
+	// add folder
+	addFolderCmd := rclient.B().Sadd().Key(foldersKey).Member(req.FolderName).Build()
+	if _, err := rclient.Do(ctx, addFolderCmd).AsInt64(); err != nil {
+		return nil, err
+	}
+
+	return &pb.FolderCreationResponse{
+		FolderCreated:     true,
+		ActionDescription: "Folder successfully created.",
+		EmailAddress:      req.EmailAddress,
+		FullName:          req.FullName,
+		FolderName:        req.FolderName,
+	}, nil
 }
 
-func (h *OcrServiceHandler) SearchFileData(ctx context.Context, req *pb.SearchRequest) (*pb.Expenses, error) {
+func (h *OcrServiceHandler) SearchFolders(ctx context.Context, req *pb.FolderSearchRequest) (*pb.FolderSearchResponse, error) {
+
+	rclient, err := utils.InitializeRedisClient()
+	if err != nil {
+		return nil, err
+	}
+	defer rclient.Close()
+
+	userHashKey := fmt.Sprintf("user:%s", req.EmailAddress)
+	foldersKey := fmt.Sprintf("%s:folders", userHashKey)
+
+	userExistsCmd := rclient.B().Exists().Key(userHashKey).Build()
+	existsResp, err := rclient.Do(ctx, userExistsCmd).AsInt64()
+	if err != nil {
+		return nil, err
+	}
+	if existsResp == 0 {
+		return &pb.FolderSearchResponse{
+			FolderFound:       false,
+			ActionDescription: "Invalid user email.",
+			Folders:           make([]string, 0),
+		}, err
+	}
+
+	// TODO SearchRequest params
+
+	retrieveFoldersCmd := rclient.B().Smembers().Key(foldersKey).Build()
+	foldersResp, err := rclient.Do(ctx, retrieveFoldersCmd).AsStrSlice()
+	if err != nil {
+		return nil, err
+	}
+
+	return &pb.FolderSearchResponse{
+		FolderFound:       true,
+		ActionDescription: "Folders successfully retrieved.",
+		Folders:           foldersResp,
+	}, nil
+}
+
+func (h *OcrServiceHandler) SearchFileData(ctx context.Context, req *pb.SearchFileRequest) (*pb.SearchFileResponse, error) {
 
 	rclient, err := utils.InitializeRedisClient()
 	if err != nil {
@@ -44,8 +136,8 @@ func (h *OcrServiceHandler) SearchFileData(ctx context.Context, req *pb.SearchRe
 		}
 
 		log.Printf("%d total documents found.", n)
-		var expenseItem models.Expense
-		var expenseList []*pb.ExtractResponse
+		var expenseItem models.ExtractedFile
+		var expenseList []*pb.ExpenseItem
 
 		for _, item := range resp {
 			jsonData, ok := item.Doc["$"]
@@ -57,35 +149,45 @@ func (h *OcrServiceHandler) SearchFileData(ctx context.Context, req *pb.SearchRe
 				log.Println("Error unmarshalling JSON:", err)
 				continue
 			}
-			expenseList = append(expenseList, &pb.ExtractResponse{
-				FILE_PAGE:            &pb.ExpenseField{Text: expenseItem.FilePage.Text, Confidence: expenseItem.FilePage.Confidence},
-				FILE_NAME:            &pb.ExpenseField{Text: expenseItem.FileName.Text, Confidence: expenseItem.FileName.Confidence},
-				INVOICE_RECEIPT_DATE: &pb.ExpenseField{Text: expenseItem.InvoiceReceiptDate.Text, Confidence: expenseItem.InvoiceReceiptDate.Confidence},
-				VENDOR_NAME:          &pb.ExpenseField{Text: expenseItem.VendorName.Text, Confidence: expenseItem.VendorName.Confidence},
-				VENDOR_ADDRESS:       &pb.ExpenseField{Text: expenseItem.VendorAddress.Text, Confidence: expenseItem.VendorAddress.Confidence},
-				TOTAL:                &pb.ExpenseField{Text: expenseItem.Total.Text, Confidence: expenseItem.Total.Confidence},
-				SUBTOTAL:             &pb.ExpenseField{Text: expenseItem.Subtotal.Text, Confidence: expenseItem.Subtotal.Confidence},
-				TAX:                  &pb.ExpenseField{Text: expenseItem.Tax.Text, Confidence: expenseItem.Tax.Confidence},
-				VENDOR_PHONE:         &pb.ExpenseField{Text: expenseItem.VendorPhone.Text, Confidence: expenseItem.VendorPhone.Confidence},
-				STREET:               &pb.ExpenseField{Text: expenseItem.Street.Text, Confidence: expenseItem.Street.Confidence},
-				GRATUITY:             &pb.ExpenseField{Text: expenseItem.Gratuity.Text, Confidence: expenseItem.Gratuity.Confidence},
-				CITY:                 &pb.ExpenseField{Text: expenseItem.City.Text, Confidence: expenseItem.City.Confidence},
-				STATE:                &pb.ExpenseField{Text: expenseItem.State.Text, Confidence: expenseItem.State.Confidence},
-				COUNTRY:              &pb.ExpenseField{Text: expenseItem.Country.Text, Confidence: expenseItem.Country.Confidence},
-				ZIP_CODE:             &pb.ExpenseField{Text: expenseItem.ZipCode.Text, Confidence: expenseItem.ZipCode.Confidence},
-				CATEGORY:             &pb.ExpenseField{Text: expenseItem.Category.Text, Confidence: expenseItem.Category.Confidence},
-				ObjectUrl:            expenseItem.ObjectUrl,
+			expenseList = append(expenseList, &pb.ExpenseItem{
+				FolderName: expenseItem.FolderName,
+				Data: &pb.FileExtract{
+					FilePage:           &pb.ExpenseField{Text: expenseItem.File.Data.FilePage.Text, Confidence: expenseItem.File.Data.FilePage.Confidence},
+					FileName:           &pb.ExpenseField{Text: expenseItem.File.Data.FileName.Text, Confidence: expenseItem.File.Data.FileName.Confidence},
+					InvoiceReceiptDate: &pb.ExpenseField{Text: expenseItem.File.Data.InvoiceReceiptDate.Text, Confidence: expenseItem.File.Data.InvoiceReceiptDate.Confidence},
+					VendorName:         &pb.ExpenseField{Text: expenseItem.File.Data.VendorName.Text, Confidence: expenseItem.File.Data.VendorName.Confidence},
+					VendorAddress:      &pb.ExpenseField{Text: expenseItem.File.Data.VendorAddress.Text, Confidence: expenseItem.File.Data.VendorAddress.Confidence},
+					Total:              &pb.ExpenseField{Text: expenseItem.File.Data.Total.Text, Confidence: expenseItem.File.Data.Total.Confidence},
+					Subtotal:           &pb.ExpenseField{Text: expenseItem.File.Data.Subtotal.Text, Confidence: expenseItem.File.Data.Subtotal.Confidence},
+					Tax:                &pb.ExpenseField{Text: expenseItem.File.Data.Tax.Text, Confidence: expenseItem.File.Data.Tax.Confidence},
+					VendorPhone:        &pb.ExpenseField{Text: expenseItem.File.Data.VendorPhone.Text, Confidence: expenseItem.File.Data.VendorPhone.Confidence},
+					Street:             &pb.ExpenseField{Text: expenseItem.File.Data.Street.Text, Confidence: expenseItem.File.Data.Street.Confidence},
+					Gratuity:           &pb.ExpenseField{Text: expenseItem.File.Data.Gratuity.Text, Confidence: expenseItem.File.Data.Gratuity.Confidence},
+					City:               &pb.ExpenseField{Text: expenseItem.File.Data.City.Text, Confidence: expenseItem.File.Data.City.Confidence},
+					State:              &pb.ExpenseField{Text: expenseItem.File.Data.State.Text, Confidence: expenseItem.File.Data.State.Confidence},
+					Country:            &pb.ExpenseField{Text: expenseItem.File.Data.Country.Text, Confidence: expenseItem.File.Data.Country.Confidence},
+					ZipCode:            &pb.ExpenseField{Text: expenseItem.File.Data.ZipCode.Text, Confidence: expenseItem.File.Data.ZipCode.Confidence},
+					Category:           &pb.ExpenseField{Text: expenseItem.File.Data.Category.Text, Confidence: expenseItem.File.Data.Category.Confidence},
+					ObjectUrl:          expenseItem.File.Data.ObjectUrl,
+					PreviewUrl:         expenseItem.File.Data.PreviewUrl,
+				},
 			})
 		}
-		return &pb.Expenses{
-			Info: expenseList,
+		return &pb.SearchFileResponse{
+			FileFound:         true,
+			ActionDescription: "Files successfully retrieved.",
+			EmailAddress:      req.EmailAddress,
+			FolderName:        req.FolderName,
+			Expenses: &pb.Expenses{
+				Info: expenseList,
+			},
 		}, nil
 	}
-	return &pb.Expenses{}, nil
+	return &pb.SearchFileResponse{}, nil
 }
 
 // extract file data
-func (h *OcrServiceHandler) ExtractFileData(ctx context.Context, req *pb.ExtractRequest) (*pb.ExtractResponse, error) {
+func (h *OcrServiceHandler) ExtractFileData(ctx context.Context, req *pb.ExtractFileRequest) (*pb.ExtractFileResponse, error) {
 	log.Printf("Received file data of length: %d", len(req.Binary))
 	docId := uuid.New().String()
 
@@ -96,17 +198,20 @@ func (h *OcrServiceHandler) ExtractFileData(ctx context.Context, req *pb.Extract
 	defer rclient.Close()
 
 	// upload req.GetBinary() to s3 using docId as the identifier
-	fileType := "pdf"
-	key := fmt.Sprintf("%s.%s", docId, fileType)
-	objectURL := fmt.Sprintf("https://%s.s3.amazonaws.com/%s", "sobaii-expenses-us-east-1", key)
-	_, err = h.S3Client.PutObject(ctx, &s3.PutObjectInput{
-		Bucket:      aws.String("sobaii-expenses-us-east-1"),
-		Key:         aws.String(key),
-		ContentType: aws.String("application/pdf"),
-		Body:        bytes.NewReader(req.GetBinary()),
-	})
-	if err != nil {
-		return nil, fmt.Errorf("failed to upload file to S3: %w", err)
+	var fileExtension string
+	var s3ContentType string
+	switch req.MimeType {
+	case pb.MimeType_APPLICATION_PDF:
+		fileExtension = "pdf"
+		s3ContentType = "application/pdf"
+	case pb.MimeType_IMAGE_JPEG:
+		fileExtension = "jpeg"
+		s3ContentType = "image/jpeg"
+	case pb.MimeType_IMAGE_PNG:
+		fileExtension = "png"
+		s3ContentType = "image/png"
+	default:
+		return nil, fmt.Errorf("unsupported MIME type")
 	}
 
 	input := &textract.AnalyzeExpenseInput{
@@ -120,7 +225,16 @@ func (h *OcrServiceHandler) ExtractFileData(ctx context.Context, req *pb.Extract
 		return nil, err
 	}
 
-	response := &pb.ExtractResponse{}
+	response := &pb.ExtractFileResponse{
+		FileExtracted:     true,
+		ActionDescription: "File data successfully extracted.",
+		EmailAddress:      req.EmailAddress,
+		FolderName:        req.FolderName,
+		File: &pb.ExpenseItem{
+			FolderName: req.FolderName,
+			Data:       &pb.FileExtract{},
+		},
+	}
 	for _, doc := range results.ExpenseDocuments {
 		for _, field := range doc.SummaryFields {
 			text := ""
@@ -134,41 +248,75 @@ func (h *OcrServiceHandler) ExtractFileData(ctx context.Context, req *pb.Extract
 
 			switch *field.Type.Text {
 			case "FILE_PAGE":
-				response.FILE_PAGE = &pb.ExpenseField{Text: text, Confidence: confidence}
+				response.File.Data.FilePage = &pb.ExpenseField{Text: text, Confidence: confidence}
 			case "FILE_NAME":
-				response.FILE_NAME = &pb.ExpenseField{Text: text, Confidence: confidence}
+				response.File.Data.FileName = &pb.ExpenseField{Text: text, Confidence: confidence}
 			case "INVOICE_RECEIPT_DATE":
-				response.INVOICE_RECEIPT_DATE = &pb.ExpenseField{Text: text, Confidence: confidence}
+				response.File.Data.InvoiceReceiptDate = &pb.ExpenseField{Text: text, Confidence: confidence}
 			case "VENDOR_NAME":
-				response.VENDOR_NAME = &pb.ExpenseField{Text: text, Confidence: confidence}
+				response.File.Data.VendorName = &pb.ExpenseField{Text: text, Confidence: confidence}
 			case "VENDOR_ADDRESS":
-				response.VENDOR_ADDRESS = &pb.ExpenseField{Text: text, Confidence: confidence}
+				response.File.Data.VendorAddress = &pb.ExpenseField{Text: text, Confidence: confidence}
 			case "TOTAL":
-				response.TOTAL = &pb.ExpenseField{Text: text, Confidence: confidence}
+				response.File.Data.Total = &pb.ExpenseField{Text: text, Confidence: confidence}
 			case "SUBTOTAL":
-				response.SUBTOTAL = &pb.ExpenseField{Text: text, Confidence: confidence}
+				response.File.Data.Subtotal = &pb.ExpenseField{Text: text, Confidence: confidence}
 			case "TAX":
-				response.TAX = &pb.ExpenseField{Text: text, Confidence: confidence}
+				response.File.Data.Tax = &pb.ExpenseField{Text: text, Confidence: confidence}
 			case "VENDOR_PHONE":
-				response.VENDOR_PHONE = &pb.ExpenseField{Text: text, Confidence: confidence}
+				response.File.Data.VendorPhone = &pb.ExpenseField{Text: text, Confidence: confidence}
 			case "STREET":
-				response.STREET = &pb.ExpenseField{Text: text, Confidence: confidence}
+				response.File.Data.Street = &pb.ExpenseField{Text: text, Confidence: confidence}
 			case "GRATUITY":
-				response.GRATUITY = &pb.ExpenseField{Text: text, Confidence: confidence}
+				response.File.Data.Gratuity = &pb.ExpenseField{Text: text, Confidence: confidence}
 			case "CITY":
-				response.CITY = &pb.ExpenseField{Text: text, Confidence: confidence}
+				response.File.Data.City = &pb.ExpenseField{Text: text, Confidence: confidence}
 			case "STATE":
-				response.STATE = &pb.ExpenseField{Text: text, Confidence: confidence}
+				response.File.Data.State = &pb.ExpenseField{Text: text, Confidence: confidence}
 			case "COUNTRY":
-				response.COUNTRY = &pb.ExpenseField{Text: text, Confidence: confidence}
+				response.File.Data.Country = &pb.ExpenseField{Text: text, Confidence: confidence}
 			case "ZIP_CODE":
-				response.ZIP_CODE = &pb.ExpenseField{Text: text, Confidence: confidence}
+				response.File.Data.ZipCode = &pb.ExpenseField{Text: text, Confidence: confidence}
 			case "CATEGORY":
-				response.CATEGORY = &pb.ExpenseField{Text: text, Confidence: confidence}
+				response.File.Data.Category = &pb.ExpenseField{Text: text, Confidence: confidence}
 			}
 		}
 	}
-	response.ObjectUrl = objectURL
+
+	key := fmt.Sprintf("%s/%s/%s.%s", req.EmailAddress, req.FolderName, docId, fileExtension)
+	objectURL := fmt.Sprintf("https://%s.s3.amazonaws.com/%s", "sobaii-expenses-us-east-1", key)
+	_, err = h.S3Client.PutObject(ctx, &s3.PutObjectInput{
+		Bucket:      aws.String("sobaii-expenses-us-east-1"),
+		Key:         aws.String(key),
+		ContentType: aws.String(s3ContentType),
+		Body:        bytes.NewReader(req.GetBinary()),
+	})
+	if err != nil {
+		return nil, fmt.Errorf("failed to upload file to S3: %w", err)
+	}
+
+	response.File.Data.ObjectUrl = objectURL
+
+	if s3ContentType == "application/pdf" {
+		pngBytes, err := services.ConvertPDFToPNG(req.GetBinary())
+		if err != nil {
+			return nil, fmt.Errorf("failed to convert PDF to PNG: %w", err)
+		}
+		key = fmt.Sprintf("%s/%s/%s-preview.%s", req.EmailAddress, req.FolderName, docId, "png")
+		objectURL = fmt.Sprintf("https://%s.s3.amazonaws.com/%s", "sobaii-expenses-us-east-1", key)
+
+		_, err = h.S3Client.PutObject(ctx, &s3.PutObjectInput{
+			Bucket:      aws.String("sobaii-expenses-us-east-1"),
+			Key:         aws.String(key),
+			ContentType: aws.String("image/png"),
+			Body:        bytes.NewReader(pngBytes),
+		})
+		if err != nil {
+			return nil, fmt.Errorf("failed to upload file to S3: %w", err)
+		}
+	}
+
+	response.File.Data.PreviewUrl = objectURL
 
 	dataDoc, jsonErr := json.Marshal(response)
 	if jsonErr != nil {
