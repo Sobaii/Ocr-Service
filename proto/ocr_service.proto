@@ -1,6 +1,7 @@
 syntax = "proto3";
 
 option go_package = "internal/proto";
+import "google/api/annotations.proto";
 
 package ocr_service;
 
@@ -102,8 +103,28 @@ message ExtractFileResponse {
 }
 
 service OcrService {
-    rpc CreateFolder (FolderCreationRequest) returns (FolderCreationResponse);
-    rpc SearchFolders (FolderSearchRequest) returns (FolderSearchResponse);
-    rpc SearchFileData (SearchFileRequest) returns (SearchFileResponse);
-    rpc ExtractFileData (ExtractFileRequest) returns (ExtractFileResponse);
+    rpc CreateFolder (FolderCreationRequest) returns (FolderCreationResponse) {
+        option (google.api.http) = {
+            post: "/v1/create/folder"
+            body: "*"
+        };
+    };
+    rpc SearchFolders (FolderSearchRequest) returns (FolderSearchResponse) {
+        option (google.api.http) = {
+            post: "/v1/search/folder"
+            body: "*"
+        };
+    };
+    rpc SearchFileData (SearchFileRequest) returns (SearchFileResponse) {
+        option (google.api.http) = {
+            post: "/v1/search/file"
+            body: "*"
+        };
+    };
+    rpc ExtractFileData (ExtractFileRequest) returns (ExtractFileResponse) {
+        option (google.api.http) = {
+            post: "/v1/extract/file"
+            body: "*"
+        };
+    };
 }

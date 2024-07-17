@@ -1,0 +1,419 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "proto/ocr_service.proto",
+    "version": "version not set"
+  },
+  "tags": [
+    {
+      "name": "OcrService"
+    }
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/v1/create/folder": {
+      "post": {
+        "operationId": "OcrService_CreateFolder",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/ocr_serviceFolderCreationResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/ocr_serviceFolderCreationRequest"
+            }
+          }
+        ],
+        "tags": [
+          "OcrService"
+        ]
+      }
+    },
+    "/v1/extract/file": {
+      "post": {
+        "operationId": "OcrService_ExtractFileData",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/ocr_serviceExtractFileResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/ocr_serviceExtractFileRequest"
+            }
+          }
+        ],
+        "tags": [
+          "OcrService"
+        ]
+      }
+    },
+    "/v1/search/file": {
+      "post": {
+        "operationId": "OcrService_SearchFileData",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/ocr_serviceSearchFileResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/ocr_serviceSearchFileRequest"
+            }
+          }
+        ],
+        "tags": [
+          "OcrService"
+        ]
+      }
+    },
+    "/v1/search/folder": {
+      "post": {
+        "operationId": "OcrService_SearchFolders",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/ocr_serviceFolderSearchResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/ocr_serviceFolderSearchRequest"
+            }
+          }
+        ],
+        "tags": [
+          "OcrService"
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "ocr_serviceExpenseField": {
+      "type": "object",
+      "properties": {
+        "text": {
+          "type": "string"
+        },
+        "confidence": {
+          "type": "number",
+          "format": "double"
+        }
+      }
+    },
+    "ocr_serviceExpenseItem": {
+      "type": "object",
+      "properties": {
+        "folderName": {
+          "type": "string"
+        },
+        "data": {
+          "$ref": "#/definitions/ocr_serviceFileExtract"
+        }
+      }
+    },
+    "ocr_serviceExpenses": {
+      "type": "object",
+      "properties": {
+        "info": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/ocr_serviceExpenseItem"
+          }
+        }
+      }
+    },
+    "ocr_serviceExtractFileRequest": {
+      "type": "object",
+      "properties": {
+        "emailAddress": {
+          "type": "string"
+        },
+        "folderName": {
+          "type": "string"
+        },
+        "binary": {
+          "type": "string",
+          "format": "byte"
+        },
+        "mimeType": {
+          "$ref": "#/definitions/ocr_serviceMimeType"
+        }
+      }
+    },
+    "ocr_serviceExtractFileResponse": {
+      "type": "object",
+      "properties": {
+        "fileExtracted": {
+          "type": "boolean"
+        },
+        "actionDescription": {
+          "type": "string"
+        },
+        "emailAddress": {
+          "type": "string"
+        },
+        "folderName": {
+          "type": "string"
+        },
+        "file": {
+          "$ref": "#/definitions/ocr_serviceExpenseItem"
+        }
+      }
+    },
+    "ocr_serviceFileExtract": {
+      "type": "object",
+      "properties": {
+        "filePage": {
+          "$ref": "#/definitions/ocr_serviceExpenseField"
+        },
+        "fileName": {
+          "$ref": "#/definitions/ocr_serviceExpenseField"
+        },
+        "invoiceReceiptDate": {
+          "$ref": "#/definitions/ocr_serviceExpenseField"
+        },
+        "vendorName": {
+          "$ref": "#/definitions/ocr_serviceExpenseField"
+        },
+        "vendorAddress": {
+          "$ref": "#/definitions/ocr_serviceExpenseField"
+        },
+        "total": {
+          "$ref": "#/definitions/ocr_serviceExpenseField"
+        },
+        "subtotal": {
+          "$ref": "#/definitions/ocr_serviceExpenseField"
+        },
+        "tax": {
+          "$ref": "#/definitions/ocr_serviceExpenseField"
+        },
+        "vendorPhone": {
+          "$ref": "#/definitions/ocr_serviceExpenseField"
+        },
+        "street": {
+          "$ref": "#/definitions/ocr_serviceExpenseField"
+        },
+        "gratuity": {
+          "$ref": "#/definitions/ocr_serviceExpenseField"
+        },
+        "city": {
+          "$ref": "#/definitions/ocr_serviceExpenseField"
+        },
+        "state": {
+          "$ref": "#/definitions/ocr_serviceExpenseField"
+        },
+        "country": {
+          "$ref": "#/definitions/ocr_serviceExpenseField"
+        },
+        "zipCode": {
+          "$ref": "#/definitions/ocr_serviceExpenseField"
+        },
+        "category": {
+          "$ref": "#/definitions/ocr_serviceExpenseField"
+        },
+        "objectUrl": {
+          "type": "string"
+        },
+        "previewUrl": {
+          "type": "string"
+        }
+      }
+    },
+    "ocr_serviceFolderCreationRequest": {
+      "type": "object",
+      "properties": {
+        "emailAddress": {
+          "type": "string"
+        },
+        "fullName": {
+          "type": "string"
+        },
+        "folderName": {
+          "type": "string"
+        }
+      }
+    },
+    "ocr_serviceFolderCreationResponse": {
+      "type": "object",
+      "properties": {
+        "folderCreated": {
+          "type": "boolean"
+        },
+        "actionDescription": {
+          "type": "string"
+        },
+        "emailAddress": {
+          "type": "string"
+        },
+        "fullName": {
+          "type": "string"
+        },
+        "folderName": {
+          "type": "string"
+        }
+      }
+    },
+    "ocr_serviceFolderSearchRequest": {
+      "type": "object",
+      "properties": {
+        "emailAddress": {
+          "type": "string"
+        },
+        "query": {
+          "type": "string"
+        }
+      }
+    },
+    "ocr_serviceFolderSearchResponse": {
+      "type": "object",
+      "properties": {
+        "folderFound": {
+          "type": "boolean"
+        },
+        "actionDescription": {
+          "type": "string"
+        },
+        "folders": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "ocr_serviceMimeType": {
+      "type": "string",
+      "enum": [
+        "MIME_TYPE_UNSPECIFIED",
+        "IMAGE_JPEG",
+        "IMAGE_PNG",
+        "APPLICATION_PDF"
+      ],
+      "default": "MIME_TYPE_UNSPECIFIED"
+    },
+    "ocr_serviceSearchFileRequest": {
+      "type": "object",
+      "properties": {
+        "emailAddress": {
+          "type": "string"
+        },
+        "folderName": {
+          "type": "string"
+        },
+        "index": {
+          "type": "string"
+        },
+        "query": {
+          "type": "string"
+        }
+      }
+    },
+    "ocr_serviceSearchFileResponse": {
+      "type": "object",
+      "properties": {
+        "fileFound": {
+          "type": "boolean"
+        },
+        "actionDescription": {
+          "type": "string"
+        },
+        "emailAddress": {
+          "type": "string"
+        },
+        "folderName": {
+          "type": "string"
+        },
+        "expenses": {
+          "$ref": "#/definitions/ocr_serviceExpenses"
+        }
+      }
+    },
+    "protobufAny": {
+      "type": "object",
+      "properties": {
+        "@type": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": {}
+    },
+    "rpcStatus": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/protobufAny"
+          }
+        }
+      }
+    }
+  }
+}

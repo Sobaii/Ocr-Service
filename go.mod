@@ -6,8 +6,8 @@ require (
 	github.com/aws/aws-sdk-go-v2 v1.30.1
 	github.com/aws/aws-sdk-go-v2/config v1.27.24
 	github.com/aws/aws-sdk-go-v2/service/textract v1.32.1
-	google.golang.org/grpc v1.64.0
-	google.golang.org/protobuf v1.34.1
+	google.golang.org/grpc v1.64.1
+	google.golang.org/protobuf v1.34.2
 )
 
 require (
@@ -32,16 +32,18 @@ require (
 	github.com/klauspost/compress v1.11.7 // indirect
 	github.com/rs/cors v1.7.0 // indirect
 	github.com/sashabaranov/go-openai v1.26.2 // indirect
+	google.golang.org/genproto/googleapis/api v0.0.0-20240711142825-46eb208f015d // indirect
 	nhooyr.io/websocket v1.8.6 // indirect
 )
 
 require (
 	github.com/aws/aws-sdk-go-v2/service/s3 v1.58.0
 	github.com/google/uuid v1.6.0
+	github.com/grpc-ecosystem/grpc-gateway/v2 v2.20.0
 	github.com/improbable-eng/grpc-web v0.15.0
 	github.com/redis/rueidis v1.0.40
-	golang.org/x/net v0.24.0 // indirect
-	golang.org/x/sys v0.19.0 // indirect
-	golang.org/x/text v0.14.0 // indirect
-	google.golang.org/genproto/googleapis/rpc v0.0.0-20240318140521-94a12d6c2237 // indirect
+	golang.org/x/net v0.26.0 // indirect
+	golang.org/x/sys v0.21.0 // indirect
+	golang.org/x/text v0.16.0 // indirect
+	google.golang.org/genproto/googleapis/rpc v0.0.0-20240701130421-f6361c86f094 // indirect
 )
