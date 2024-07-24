@@ -12,27 +12,26 @@ enum MimeType {
 }
 
 message ExtractFileRequest {
-    string email_address = 1;
+    string user_id = 1;
     string folder_name = 2;
     bytes binary = 3;
     MimeType mime_type = 4;
 };
 
 message SearchFileRequest {
-    string email_address = 1;
+    string user_id = 1;
     string folder_name = 2;
     string index = 3;
     string query = 4;
 }
 
 message FolderCreationRequest {
-    string email_address = 1;
-    string full_name = 2;
-    string folder_name = 3;
+    string user_id = 1;
+    string folder_name = 2;
 }
 
 message FolderSearchRequest {
-    string email_address = 1;
+    string user_id = 1;
     string query = 2;
 }
 
@@ -80,15 +79,14 @@ message FolderSearchResponse {
 message FolderCreationResponse {
     bool folder_created = 1;
     string action_description = 2;
-    string email_address = 3;
-    string full_name = 4;
-    string folder_name = 5;
+    string user_id = 3;
+    string folder_name = 4;
 }
 
 message SearchFileResponse {
     bool file_found = 1;
     string action_description = 2;
-    string email_address = 3;
+    string user_id = 3;
     string folder_name = 4;
     Expenses expenses = 5;
 }
@@ -96,7 +94,7 @@ message SearchFileResponse {
 message ExtractFileResponse {
     bool file_extracted = 1;
     string action_description = 2;
-    string email_address = 3;
+    string user_id = 3;
     string folder_name = 4;
     ExpenseItem file = 5;
 }

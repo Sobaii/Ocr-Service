@@ -38,6 +38,8 @@ require (
 	github.com/aws/aws-sdk-go-v2/service/s3 v1.58.0
 	github.com/google/uuid v1.6.0
 	github.com/improbable-eng/grpc-web v0.15.0
+	github.com/joho/godotenv v1.5.1
+	github.com/lib/pq v1.10.9
 	github.com/redis/rueidis v1.0.40
 	golang.org/x/net v0.24.0 // indirect
 	golang.org/x/sys v0.19.0 // indirect

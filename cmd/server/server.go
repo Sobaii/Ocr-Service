@@ -15,6 +15,7 @@ import (
 	"github.com/aws/aws-sdk-go-v2/service/s3"
 	"github.com/aws/aws-sdk-go-v2/service/textract"
 	"github.com/improbable-eng/grpc-web/go/grpcweb"
+	"github.com/joho/godotenv"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
 )
@@ -26,6 +27,9 @@ var (
 
 func RunServer() {
 	flag.Parse()
+	if err := godotenv.Load(); err != nil {
+		log.Fatalf("Error loading .env file")
+	}
 
 	// Load the Shared AWS Configuration (~/.aws/config)
 	cfg, err := config.LoadDefaultConfig(context.TODO(), config.WithRegion("us-east-1"))
@@ -35,6 +39,18 @@ func RunServer() {
 	textractClient = textract.NewFromConfig(cfg)
 	s3Client := s3.NewFromConfig(cfg)
 
+	// Connect to RDS Postgres
+	db, err := utils.InitializePostgresConnection()
+	if err != nil {
+		log.Fatalf("unable to initialize connection, %v", err)
+	}
+	defer db.Close()
+	var version string
+	if err := db.QueryRow("select version()").Scan(&version); err != nil {
+		panic(err)
+	}
+	log.Printf("version=%s\n", version)
+
 	// gRPC server
 	lis, err := net.Listen("tcp", fmt.Sprintf("localhost:%d", *port))
 	if err != nil {
@@ -42,11 +58,8 @@ func RunServer() {
 	}
 
 	s := grpc.NewServer()
-	pb.RegisterOcrServiceServer(s, &handlers.OcrServiceHandler{TextractClient: textractClient, S3Client: s3Client})
+	pb.RegisterOcrServiceServer(s, &handlers.OcrServiceHandler{DB: db, TextractClient: textractClient, S3Client: s3Client})
 	reflection.Register(s)
-
-	var context = context.Background()
-	utils.InitializeSearchIndex(context)
 
 	go func() {
 		log.Printf("gRPC server listening at %v", lis.Addr())
