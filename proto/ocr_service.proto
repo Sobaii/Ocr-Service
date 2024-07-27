@@ -35,9 +35,17 @@ message FolderSearchRequest {
     string query = 2;
 }
 
+message ModifyExpenseFieldRequest {
+    string user_id = 1;
+    uint32 expense_id = 2;
+    string field_type = 3;
+    string field_text = 4;
+}
+
 message ExpenseField {
-    string text = 1;
-    double confidence = 2;
+    string field_type = 1;
+    string text = 2;
+    double confidence = 3;
 }
 
 message FileExtract {
@@ -59,6 +67,7 @@ message FileExtract {
     ExpenseField category = 16;
     string object_url = 17;
     string preview_url = 18;
+    uint32 expense_id = 19;
 }
 
 message ExpenseItem {
@@ -99,9 +108,19 @@ message ExtractFileResponse {
     ExpenseItem file = 5;
 }
 
+message ModifyExpenseFieldResponse {
+    bool expense_field_modified = 1;
+    string action_description = 2;
+    uint32 expense_id = 3;
+    string field_type = 4;
+    string field_text = 5;
+    double confidence = 6;
+}
+
 service OcrService {
     rpc CreateFolder (FolderCreationRequest) returns (FolderCreationResponse);
     rpc SearchFolders (FolderSearchRequest) returns (FolderSearchResponse);
     rpc SearchFileData (SearchFileRequest) returns (SearchFileResponse);
     rpc ExtractFileData (ExtractFileRequest) returns (ExtractFileResponse);
+    rpc ModifyExpenseField (ModifyExpenseFieldRequest) returns (ModifyExpenseFieldResponse);
 }

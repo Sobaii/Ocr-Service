@@ -19,10 +19,11 @@ import (
 const _ = grpc.SupportPackageIsVersion8
 
 const (
-	OcrService_CreateFolder_FullMethodName    = "/ocr_service.OcrService/CreateFolder"
-	OcrService_SearchFolders_FullMethodName   = "/ocr_service.OcrService/SearchFolders"
-	OcrService_SearchFileData_FullMethodName  = "/ocr_service.OcrService/SearchFileData"
-	OcrService_ExtractFileData_FullMethodName = "/ocr_service.OcrService/ExtractFileData"
+	OcrService_CreateFolder_FullMethodName       = "/ocr_service.OcrService/CreateFolder"
+	OcrService_SearchFolders_FullMethodName      = "/ocr_service.OcrService/SearchFolders"
+	OcrService_SearchFileData_FullMethodName     = "/ocr_service.OcrService/SearchFileData"
+	OcrService_ExtractFileData_FullMethodName    = "/ocr_service.OcrService/ExtractFileData"
+	OcrService_ModifyExpenseField_FullMethodName = "/ocr_service.OcrService/ModifyExpenseField"
 )
 
 // OcrServiceClient is the client API for OcrService service.
@@ -33,6 +34,7 @@ type OcrServiceClient interface {
 	SearchFolders(ctx context.Context, in *FolderSearchRequest, opts ...grpc.CallOption) (*FolderSearchResponse, error)
 	SearchFileData(ctx context.Context, in *SearchFileRequest, opts ...grpc.CallOption) (*SearchFileResponse, error)
 	ExtractFileData(ctx context.Context, in *ExtractFileRequest, opts ...grpc.CallOption) (*ExtractFileResponse, error)
+	ModifyExpenseField(ctx context.Context, in *ModifyExpenseFieldRequest, opts ...grpc.CallOption) (*ModifyExpenseFieldResponse, error)
 }
 
 type ocrServiceClient struct {
@@ -83,6 +85,16 @@ func (c *ocrServiceClient) ExtractFileData(ctx context.Context, in *ExtractFileR
 	return out, nil
 }
 
+func (c *ocrServiceClient) ModifyExpenseField(ctx context.Context, in *ModifyExpenseFieldRequest, opts ...grpc.CallOption) (*ModifyExpenseFieldResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ModifyExpenseFieldResponse)
+	err := c.cc.Invoke(ctx, OcrService_ModifyExpenseField_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // OcrServiceServer is the server API for OcrService service.
 // All implementations must embed UnimplementedOcrServiceServer
 // for forward compatibility
@@ -91,6 +103,7 @@ type OcrServiceServer interface {
 	SearchFolders(context.Context, *FolderSearchRequest) (*FolderSearchResponse, error)
 	SearchFileData(context.Context, *SearchFileRequest) (*SearchFileResponse, error)
 	ExtractFileData(context.Context, *ExtractFileRequest) (*ExtractFileResponse, error)
+	ModifyExpenseField(context.Context, *ModifyExpenseFieldRequest) (*ModifyExpenseFieldResponse, error)
 	mustEmbedUnimplementedOcrServiceServer()
 }
 
@@ -109,6 +122,9 @@ func (UnimplementedOcrServiceServer) SearchFileData(context.Context, *SearchFile
 }
 func (UnimplementedOcrServiceServer) ExtractFileData(context.Context, *ExtractFileRequest) (*ExtractFileResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ExtractFileData not implemented")
+}
+func (UnimplementedOcrServiceServer) ModifyExpenseField(context.Context, *ModifyExpenseFieldRequest) (*ModifyExpenseFieldResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ModifyExpenseField not implemented")
 }
 func (UnimplementedOcrServiceServer) mustEmbedUnimplementedOcrServiceServer() {}
 
@@ -195,6 +211,24 @@ func _OcrService_ExtractFileData_Handler(srv interface{}, ctx context.Context, d
 	return interceptor(ctx, in, info, handler)
 }
 
+func _OcrService_ModifyExpenseField_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ModifyExpenseFieldRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(OcrServiceServer).ModifyExpenseField(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: OcrService_ModifyExpenseField_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(OcrServiceServer).ModifyExpenseField(ctx, req.(*ModifyExpenseFieldRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // OcrService_ServiceDesc is the grpc.ServiceDesc for OcrService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -217,6 +251,10 @@ var OcrService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "ExtractFileData",
 			Handler:    _OcrService_ExtractFileData_Handler,
+		},
+		{
+			MethodName: "ModifyExpenseField",
+			Handler:    _OcrService_ModifyExpenseField_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

@@ -8,6 +8,7 @@ import (
 	"log"
 	pb "ocr-service-dev/internal/proto"
 	"ocr-service-dev/internal/services"
+	"time"
 
 	_ "github.com/lib/pq"
 
@@ -114,7 +115,7 @@ func (h *OcrServiceHandler) SearchFolders(ctx context.Context, req *pb.FolderSea
 func (h *OcrServiceHandler) SearchFileData(ctx context.Context, req *pb.SearchFileRequest) (*pb.SearchFileResponse, error) {
 	if req.Index == "" && req.Query == "" {
 		query := `
-            SELECT e.id, e.clerk_user_id, e.object_url, e.preview_url, f.name, ef.field_name, ef.text, ef.confidence
+            SELECT e.id, e.clerk_user_id, e.object_url, e.preview_url, f.name, ef.field_type, ef.text, ef.confidence
 			FROM expenses e
 			LEFT JOIN expense_fields ef ON e.id = ef.expense_id
 			LEFT JOIN folders f ON e.folder_id = f.id
@@ -132,10 +133,10 @@ func (h *OcrServiceHandler) SearchFileData(ctx context.Context, req *pb.SearchFi
 		var expenseMap = make(map[int]*pb.ExpenseItem)
 		for rows.Next() {
 			var expenseID int
-			var clerkUserID, objectURL, previewURL, folderName, fieldName, text string
+			var clerkUserID, objectURL, previewURL, folderName, fieldType, text string
 			var confidence float64
 
-			err := rows.Scan(&expenseID, &clerkUserID, &objectURL, &previewURL, &folderName, &fieldName, &text, &confidence)
+			err := rows.Scan(&expenseID, &clerkUserID, &objectURL, &previewURL, &folderName, &fieldType, &text, &confidence)
 			if err != nil {
 				return &pb.SearchFileResponse{
 					FileFound:         false,
@@ -154,39 +155,40 @@ func (h *OcrServiceHandler) SearchFileData(ctx context.Context, req *pb.SearchFi
 
 			expense.Data.ObjectUrl = objectURL
 			expense.Data.PreviewUrl = previewURL
-			switch fieldName {
+			expense.Data.ExpenseId = uint32(expenseID)
+			switch fieldType {
 			case "FILE_PAGE":
-				expense.Data.FilePage = &pb.ExpenseField{Text: text, Confidence: confidence}
+				expense.Data.FilePage = &pb.ExpenseField{FieldType: fieldType, Text: text, Confidence: confidence}
 			case "FILE_NAME":
-				expense.Data.FileName = &pb.ExpenseField{Text: text, Confidence: confidence}
+				expense.Data.FileName = &pb.ExpenseField{FieldType: fieldType, Text: text, Confidence: confidence}
 			case "INVOICE_RECEIPT_DATE":
-				expense.Data.InvoiceReceiptDate = &pb.ExpenseField{Text: text, Confidence: confidence}
+				expense.Data.InvoiceReceiptDate = &pb.ExpenseField{FieldType: fieldType, Text: text, Confidence: confidence}
 			case "VENDOR_NAME":
-				expense.Data.VendorName = &pb.ExpenseField{Text: text, Confidence: confidence}
+				expense.Data.VendorName = &pb.ExpenseField{FieldType: fieldType, Text: text, Confidence: confidence}
 			case "VENDOR_ADDRESS":
-				expense.Data.VendorAddress = &pb.ExpenseField{Text: text, Confidence: confidence}
+				expense.Data.VendorAddress = &pb.ExpenseField{FieldType: fieldType, Text: text, Confidence: confidence}
 			case "TOTAL":
-				expense.Data.Total = &pb.ExpenseField{Text: text, Confidence: confidence}
+				expense.Data.Total = &pb.ExpenseField{FieldType: fieldType, Text: text, Confidence: confidence}
 			case "SUBTOTAL":
-				expense.Data.Subtotal = &pb.ExpenseField{Text: text, Confidence: confidence}
+				expense.Data.Subtotal = &pb.ExpenseField{FieldType: fieldType, Text: text, Confidence: confidence}
 			case "TAX":
-				expense.Data.Tax = &pb.ExpenseField{Text: text, Confidence: confidence}
+				expense.Data.Tax = &pb.ExpenseField{FieldType: fieldType, Text: text, Confidence: confidence}
 			case "VENDOR_PHONE":
-				expense.Data.VendorPhone = &pb.ExpenseField{Text: text, Confidence: confidence}
+				expense.Data.VendorPhone = &pb.ExpenseField{FieldType: fieldType, Text: text, Confidence: confidence}
 			case "STREET":
-				expense.Data.Street = &pb.ExpenseField{Text: text, Confidence: confidence}
+				expense.Data.Street = &pb.ExpenseField{FieldType: fieldType, Text: text, Confidence: confidence}
 			case "GRATUITY":
-				expense.Data.Gratuity = &pb.ExpenseField{Text: text, Confidence: confidence}
+				expense.Data.Gratuity = &pb.ExpenseField{FieldType: fieldType, Text: text, Confidence: confidence}
 			case "CITY":
-				expense.Data.City = &pb.ExpenseField{Text: text, Confidence: confidence}
+				expense.Data.City = &pb.ExpenseField{FieldType: fieldType, Text: text, Confidence: confidence}
 			case "STATE":
-				expense.Data.State = &pb.ExpenseField{Text: text, Confidence: confidence}
+				expense.Data.State = &pb.ExpenseField{FieldType: fieldType, Text: text, Confidence: confidence}
 			case "COUNTRY":
-				expense.Data.Country = &pb.ExpenseField{Text: text, Confidence: confidence}
+				expense.Data.Country = &pb.ExpenseField{FieldType: fieldType, Text: text, Confidence: confidence}
 			case "ZIP_CODE":
-				expense.Data.ZipCode = &pb.ExpenseField{Text: text, Confidence: confidence}
+				expense.Data.ZipCode = &pb.ExpenseField{FieldType: fieldType, Text: text, Confidence: confidence}
 			case "CATEGORY":
-				expense.Data.Category = &pb.ExpenseField{Text: text, Confidence: confidence}
+				expense.Data.Category = &pb.ExpenseField{FieldType: fieldType, Text: text, Confidence: confidence}
 			}
 		}
 
@@ -249,10 +251,11 @@ func (h *OcrServiceHandler) ExtractFileData(ctx context.Context, req *pb.Extract
 
 	if err != nil {
 		return &pb.ExtractFileResponse{
-			FileExtracted: false,
+			FileExtracted:     false,
 			ActionDescription: fmt.Sprintf("Failed to analyze expense: %s", err.Error()),
 		}, nil
 	}
+	log.Println("Expense data successfully extracted.")
 
 	// response object
 	response := &pb.ExtractFileResponse{
@@ -311,6 +314,7 @@ func (h *OcrServiceHandler) ExtractFileData(ctx context.Context, req *pb.Extract
 			}, nil
 		}
 	}
+	log.Println("Expense successfully uploaded to S3.")
 	response.File.Data.PreviewUrl = previewURL
 
 	// Insert the expense record into the database
@@ -326,66 +330,140 @@ func (h *OcrServiceHandler) ExtractFileData(ctx context.Context, req *pb.Extract
 			ActionDescription: fmt.Sprintf("failed to insert expense: %s", err.Error()),
 		}, nil
 	}
+	log.Println("Expense record successfully inserted.")
+	response.File.Data.ExpenseId = uint32(expenseID)
 
-	for _, doc := range results.ExpenseDocuments {
-		for _, field := range doc.SummaryFields {
-			text := ""
+	defer func() {
+		if r := recover(); r != nil {
+			log.Printf("Recovered from panic in document processing: %v", r)
+		}
+	}()
+	log.Printf("Starting to process %d expense documents", len(results.ExpenseDocuments))
+
+	for docIndex, doc := range results.ExpenseDocuments {
+		log.Printf("Processing document %d: %d fields found.", docIndex, len(doc.SummaryFields))
+
+		for fieldIndex, field := range doc.SummaryFields {
+			log.Printf("Processing field %d", fieldIndex)
+
+			var fieldType string
+			var text string
 			var confidence float64
 
 			if field.ValueDetection.Text == nil || field.ValueDetection.Confidence == nil {
 				continue
 			}
+			fieldType = *field.Type.Text
 			text = *field.ValueDetection.Text
 			confidence = float64(*field.ValueDetection.Confidence)
 
-			// Insert new record into expense_fields
-			_, err = h.DB.ExecContext(ctx, `
-                INSERT INTO expense_fields (expense_id, field_name, text, confidence)
-                VALUES ($1, $2, $3, $4)
-            `, expenseID, *field.Type.Text, text, confidence)
-			if err != nil {
-				return &pb.ExtractFileResponse{
-					FileExtracted:     false,
-					ActionDescription: fmt.Sprintf("failed to insert expense field: %s", err.Error()),
-				}, nil
+			insertCtx, cancel := context.WithTimeout(ctx, 3*time.Second)
+
+			var insertErr error
+			doneChan := make(chan bool)
+
+			go func() {
+				_, insertErr = h.DB.ExecContext(insertCtx, `INSERT INTO expense_fields (expense_id, field_type, text, confidence) VALUES ($1, $2, $3, $4)`, expenseID, *field.Type.Text, text, confidence)
+				doneChan <- true
+			}()
+
+			select {
+			case <-doneChan:
+				if insertErr != nil {
+					log.Printf("Failed to insert expense field: %s", insertErr.Error())
+				} else {
+					log.Println("Expense field successfully inserted.")
+				}
+			case <-insertCtx.Done():
+				if insertCtx.Err() == context.DeadlineExceeded {
+					log.Println("Insertion timed out after 3 seconds. Continuing with next field.")
+				}
 			}
 
-			switch *field.Type.Text {
-			case "FILE_PAGE":
-				response.File.Data.FilePage = &pb.ExpenseField{Text: text, Confidence: confidence}
-			case "FILE_NAME":
-				response.File.Data.FileName = &pb.ExpenseField{Text: text, Confidence: confidence}
-			case "INVOICE_RECEIPT_DATE":
-				response.File.Data.InvoiceReceiptDate = &pb.ExpenseField{Text: text, Confidence: confidence}
-			case "VENDOR_NAME":
-				response.File.Data.VendorName = &pb.ExpenseField{Text: text, Confidence: confidence}
-			case "VENDOR_ADDRESS":
-				response.File.Data.VendorAddress = &pb.ExpenseField{Text: text, Confidence: confidence}
-			case "TOTAL":
-				response.File.Data.Total = &pb.ExpenseField{Text: text, Confidence: confidence}
-			case "SUBTOTAL":
-				response.File.Data.Subtotal = &pb.ExpenseField{Text: text, Confidence: confidence}
-			case "TAX":
-				response.File.Data.Tax = &pb.ExpenseField{Text: text, Confidence: confidence}
-			case "VENDOR_PHONE":
-				response.File.Data.VendorPhone = &pb.ExpenseField{Text: text, Confidence: confidence}
-			case "STREET":
-				response.File.Data.Street = &pb.ExpenseField{Text: text, Confidence: confidence}
-			case "GRATUITY":
-				response.File.Data.Gratuity = &pb.ExpenseField{Text: text, Confidence: confidence}
-			case "CITY":
-				response.File.Data.City = &pb.ExpenseField{Text: text, Confidence: confidence}
-			case "STATE":
-				response.File.Data.State = &pb.ExpenseField{Text: text, Confidence: confidence}
-			case "COUNTRY":
-				response.File.Data.Country = &pb.ExpenseField{Text: text, Confidence: confidence}
-			case "ZIP_CODE":
-				response.File.Data.ZipCode = &pb.ExpenseField{Text: text, Confidence: confidence}
-			case "CATEGORY":
-				response.File.Data.Category = &pb.ExpenseField{Text: text, Confidence: confidence}
+			// Always cancel the context, regardless of the outcome
+			cancel()
+
+			if insertErr != nil {
+				log.Printf("failed to insert expense field: %s", insertErr.Error())
+				continue
 			}
+
+
+			log.Printf("Text: %s Confidence: %v", text, confidence)
+			switch fieldType {
+			case "FILE_PAGE":
+				response.File.Data.FilePage = &pb.ExpenseField{FieldType: fieldType, Text: text, Confidence: confidence}
+			case "FILE_NAME":
+				response.File.Data.FileName = &pb.ExpenseField{FieldType: fieldType, Text: text, Confidence: confidence}
+			case "INVOICE_RECEIPT_DATE":
+				response.File.Data.InvoiceReceiptDate = &pb.ExpenseField{FieldType: fieldType, Text: text, Confidence: confidence}
+			case "VENDOR_NAME":
+				response.File.Data.VendorName = &pb.ExpenseField{FieldType: fieldType, Text: text, Confidence: confidence}
+			case "VENDOR_ADDRESS":
+				response.File.Data.VendorAddress = &pb.ExpenseField{FieldType: fieldType, Text: text, Confidence: confidence}
+			case "TOTAL":
+				response.File.Data.Total = &pb.ExpenseField{FieldType: fieldType, Text: text, Confidence: confidence}
+			case "SUBTOTAL":
+				response.File.Data.Subtotal = &pb.ExpenseField{FieldType: fieldType, Text: text, Confidence: confidence}
+			case "TAX":
+				response.File.Data.Tax = &pb.ExpenseField{FieldType: fieldType, Text: text, Confidence: confidence}
+			case "VENDOR_PHONE":
+				response.File.Data.VendorPhone = &pb.ExpenseField{FieldType: fieldType, Text: text, Confidence: confidence}
+			case "STREET":
+				response.File.Data.Street = &pb.ExpenseField{FieldType: fieldType, Text: text, Confidence: confidence}
+			case "GRATUITY":
+				response.File.Data.Gratuity = &pb.ExpenseField{FieldType: fieldType, Text: text, Confidence: confidence}
+			case "CITY":
+				response.File.Data.City = &pb.ExpenseField{FieldType: fieldType, Text: text, Confidence: confidence}
+			case "STATE":
+				response.File.Data.State = &pb.ExpenseField{FieldType: fieldType, Text: text, Confidence: confidence}
+			case "COUNTRY":
+				response.File.Data.Country = &pb.ExpenseField{FieldType: fieldType, Text: text, Confidence: confidence}
+			case "ZIP_CODE":
+				response.File.Data.ZipCode = &pb.ExpenseField{FieldType: fieldType, Text: text, Confidence: confidence}
+			case "CATEGORY":
+				response.File.Data.Category = &pb.ExpenseField{FieldType: fieldType, Text: text, Confidence: confidence}
+			}
+			log.Printf("Finished processing field type: %v", fieldType)
 		}
 	}
 
 	return response, nil
+}
+
+func (h *OcrServiceHandler) ModifyExpenseField(ctx context.Context, req *pb.ModifyExpenseFieldRequest) (*pb.ModifyExpenseFieldResponse, error) {
+	// TODO call auth service to validate userid
+	var expenseId sql.NullInt32
+	var fieldType, fieldText sql.NullString
+	var confidence sql.NullFloat64
+
+	query := `
+	UPDATE expense_fields
+	SET text=$1
+	WHERE field_type=$2 AND expense_id=$3
+
+	RETURNING expense_id, field_type, text, confidence
+	`
+	err := h.DB.QueryRowContext(ctx, query, req.FieldText, req.FieldType, req.ExpenseId).Scan(&expenseId, &fieldType, &fieldText, &confidence)
+	if err == sql.ErrNoRows {
+		return &pb.ModifyExpenseFieldResponse{
+			ExpenseFieldModified: false,
+			ActionDescription:    fmt.Sprintf("Failed to update expense field: %s", err.Error()),
+		}, nil
+	}
+	if err != nil {
+		return &pb.ModifyExpenseFieldResponse{
+			ExpenseFieldModified: false,
+			ActionDescription:    fmt.Sprintf("Failed to update expense field: %s", err.Error()),
+		}, nil
+	}
+
+	return &pb.ModifyExpenseFieldResponse{
+		ExpenseFieldModified: true,
+		ActionDescription:    "Expense field successfully modified.",
+		ExpenseId:            uint32(expenseId.Int32),
+		FieldType:            fieldType.String,
+		FieldText:            fieldText.String,
+		Confidence:           confidence.Float64,
+	}, nil
 }
