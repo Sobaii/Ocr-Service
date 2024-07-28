@@ -116,101 +116,130 @@ func (h *OcrServiceHandler) SearchFolders(ctx context.Context, req *pb.FolderSea
 }
 
 func (h *OcrServiceHandler) SearchFileData(ctx context.Context, req *pb.SearchFileRequest) (*pb.SearchFileResponse, error) {
+
+	var query string
+	var rows *sql.Rows
+	var err error
+
 	if req.Index == "" && req.Query == "" {
-		query := `
+		query = `
             SELECT e.id, e.clerk_user_id, e.object_url, e.preview_url, f.name, ef.field_type, ef.text, ef.confidence
 			FROM expenses e
 			LEFT JOIN expense_fields ef ON e.id = ef.expense_id
 			LEFT JOIN folders f ON e.folder_id = f.id
 			WHERE e.clerk_user_id = $1
         `
-		rows, err := h.DB.QueryContext(ctx, query, req.UserId)
+		rows, err = h.DB.QueryContext(ctx, query, req.UserId)
+	} else {
+		query = `
+			WITH ranked_expenses AS (
+				SELECT 
+					ef.expense_id, 
+					ef.text, 
+					similarity(ef.text, $1) AS score,
+					ROW_NUMBER() OVER (PARTITION BY ef.expense_id ORDER BY similarity(ef.text, $1) DESC) AS rank
+				FROM expense_fields ef
+				WHERE ef.field_type = $2
+			)
+			SELECT e.id, e.clerk_user_id, e.object_url, e.preview_url, f.name, ef.field_type, ef.text, ef.confidence
+			FROM ranked_expenses
+			RIGHT JOIN expense_fields ef
+			ON ranked_expenses.expense_id = ef.expense_id
+			right join expenses e
+			on ranked_expenses.expense_id = e.id
+			right join folders f
+			on e.folder_id = f.id
+			WHERE e.clerk_user_id = $3
+			AND ranked_expenses.rank = 1
+			ORDER BY ranked_expenses.score DESC;
+		`
+		rows, err = h.DB.QueryContext(ctx, query, req.Query, req.Index, req.UserId)
+	}
+
+	if err != nil {
+		return &pb.SearchFileResponse{
+			FileFound:         false,
+			ActionDescription: fmt.Sprintf("Failed to query expenses: %s", err.Error()),
+		}, nil
+	}
+	defer rows.Close()
+
+	var expenseMap = make(map[int]*pb.ExpenseItem)
+	for rows.Next() {
+		var expenseID int
+		var clerkUserID, objectURL, previewURL, folderName, fieldType, text string
+		var confidence float64
+
+		err := rows.Scan(&expenseID, &clerkUserID, &objectURL, &previewURL, &folderName, &fieldType, &text, &confidence)
 		if err != nil {
 			return &pb.SearchFileResponse{
 				FileFound:         false,
-				ActionDescription: fmt.Sprintf("Failed to query expenses: %s", err.Error()),
+				ActionDescription: fmt.Sprintf("Failed to scan row: %s", err.Error()),
 			}, nil
 		}
-		defer rows.Close()
 
-		var expenseMap = make(map[int]*pb.ExpenseItem)
-		for rows.Next() {
-			var expenseID int
-			var clerkUserID, objectURL, previewURL, folderName, fieldType, text string
-			var confidence float64
-
-			err := rows.Scan(&expenseID, &clerkUserID, &objectURL, &previewURL, &folderName, &fieldType, &text, &confidence)
-			if err != nil {
-				return &pb.SearchFileResponse{
-					FileFound:         false,
-					ActionDescription: fmt.Sprintf("Failed to scan row: %s", err.Error()),
-				}, nil
+		expense, exists := expenseMap[expenseID]
+		if !exists {
+			expense = &pb.ExpenseItem{
+				FolderName: folderName,
+				Data:       &pb.FileExtract{},
 			}
-
-			expense, exists := expenseMap[expenseID]
-			if !exists {
-				expense = &pb.ExpenseItem{
-					FolderName: folderName,
-					Data:       &pb.FileExtract{},
-				}
-				expenseMap[expenseID] = expense
-			}
-
-			expense.Data.ObjectUrl = objectURL
-			expense.Data.PreviewUrl = previewURL
-			expense.Data.ExpenseId = uint32(expenseID)
-			switch fieldType {
-			case "FILE_PAGE":
-				expense.Data.FilePage = &pb.ExpenseField{FieldType: fieldType, Text: text, Confidence: confidence}
-			case "FILE_NAME":
-				expense.Data.FileName = &pb.ExpenseField{FieldType: fieldType, Text: text, Confidence: confidence}
-			case "INVOICE_RECEIPT_DATE":
-				expense.Data.InvoiceReceiptDate = &pb.ExpenseField{FieldType: fieldType, Text: text, Confidence: confidence}
-			case "VENDOR_NAME":
-				expense.Data.VendorName = &pb.ExpenseField{FieldType: fieldType, Text: text, Confidence: confidence}
-			case "VENDOR_ADDRESS":
-				expense.Data.VendorAddress = &pb.ExpenseField{FieldType: fieldType, Text: text, Confidence: confidence}
-			case "TOTAL":
-				expense.Data.Total = &pb.ExpenseField{FieldType: fieldType, Text: text, Confidence: confidence}
-			case "SUBTOTAL":
-				expense.Data.Subtotal = &pb.ExpenseField{FieldType: fieldType, Text: text, Confidence: confidence}
-			case "TAX":
-				expense.Data.Tax = &pb.ExpenseField{FieldType: fieldType, Text: text, Confidence: confidence}
-			case "VENDOR_PHONE":
-				expense.Data.VendorPhone = &pb.ExpenseField{FieldType: fieldType, Text: text, Confidence: confidence}
-			case "STREET":
-				expense.Data.Street = &pb.ExpenseField{FieldType: fieldType, Text: text, Confidence: confidence}
-			case "GRATUITY":
-				expense.Data.Gratuity = &pb.ExpenseField{FieldType: fieldType, Text: text, Confidence: confidence}
-			case "CITY":
-				expense.Data.City = &pb.ExpenseField{FieldType: fieldType, Text: text, Confidence: confidence}
-			case "STATE":
-				expense.Data.State = &pb.ExpenseField{FieldType: fieldType, Text: text, Confidence: confidence}
-			case "COUNTRY":
-				expense.Data.Country = &pb.ExpenseField{FieldType: fieldType, Text: text, Confidence: confidence}
-			case "ZIP_CODE":
-				expense.Data.ZipCode = &pb.ExpenseField{FieldType: fieldType, Text: text, Confidence: confidence}
-			case "CATEGORY":
-				expense.Data.Category = &pb.ExpenseField{FieldType: fieldType, Text: text, Confidence: confidence}
-			}
+			expenseMap[expenseID] = expense
 		}
 
-		var expenseList []*pb.ExpenseItem
-		for _, expense := range expenseMap {
-			expenseList = append(expenseList, expense)
+		expense.Data.ObjectUrl = objectURL
+		expense.Data.PreviewUrl = previewURL
+		expense.Data.ExpenseId = uint32(expenseID)
+		switch fieldType {
+		case "FILE_PAGE":
+			expense.Data.FilePage = &pb.ExpenseField{FieldType: fieldType, Text: text, Confidence: confidence}
+		case "FILE_NAME":
+			expense.Data.FileName = &pb.ExpenseField{FieldType: fieldType, Text: text, Confidence: confidence}
+		case "INVOICE_RECEIPT_DATE":
+			expense.Data.InvoiceReceiptDate = &pb.ExpenseField{FieldType: fieldType, Text: text, Confidence: confidence}
+		case "VENDOR_NAME":
+			expense.Data.VendorName = &pb.ExpenseField{FieldType: fieldType, Text: text, Confidence: confidence}
+		case "VENDOR_ADDRESS":
+			expense.Data.VendorAddress = &pb.ExpenseField{FieldType: fieldType, Text: text, Confidence: confidence}
+		case "TOTAL":
+			expense.Data.Total = &pb.ExpenseField{FieldType: fieldType, Text: text, Confidence: confidence}
+		case "SUBTOTAL":
+			expense.Data.Subtotal = &pb.ExpenseField{FieldType: fieldType, Text: text, Confidence: confidence}
+		case "TAX":
+			expense.Data.Tax = &pb.ExpenseField{FieldType: fieldType, Text: text, Confidence: confidence}
+		case "VENDOR_PHONE":
+			expense.Data.VendorPhone = &pb.ExpenseField{FieldType: fieldType, Text: text, Confidence: confidence}
+		case "STREET":
+			expense.Data.Street = &pb.ExpenseField{FieldType: fieldType, Text: text, Confidence: confidence}
+		case "GRATUITY":
+			expense.Data.Gratuity = &pb.ExpenseField{FieldType: fieldType, Text: text, Confidence: confidence}
+		case "CITY":
+			expense.Data.City = &pb.ExpenseField{FieldType: fieldType, Text: text, Confidence: confidence}
+		case "STATE":
+			expense.Data.State = &pb.ExpenseField{FieldType: fieldType, Text: text, Confidence: confidence}
+		case "COUNTRY":
+			expense.Data.Country = &pb.ExpenseField{FieldType: fieldType, Text: text, Confidence: confidence}
+		case "ZIP_CODE":
+			expense.Data.ZipCode = &pb.ExpenseField{FieldType: fieldType, Text: text, Confidence: confidence}
+		case "CATEGORY":
+			expense.Data.Category = &pb.ExpenseField{FieldType: fieldType, Text: text, Confidence: confidence}
 		}
-
-		return &pb.SearchFileResponse{
-			FileFound:         true,
-			ActionDescription: "Files successfully retrieved.",
-			UserId:            req.UserId,
-			FolderName:        req.FolderName,
-			Expenses: &pb.Expenses{
-				Info: expenseList,
-			},
-		}, nil
 	}
-	return &pb.SearchFileResponse{}, nil
+
+	var expenseList []*pb.ExpenseItem
+	for _, expense := range expenseMap {
+		expenseList = append(expenseList, expense)
+	}
+
+	return &pb.SearchFileResponse{
+		FileFound:         true,
+		ActionDescription: "Files successfully retrieved.",
+		UserId:            req.UserId,
+		FolderName:        req.FolderName,
+		Expenses: &pb.Expenses{
+			Info: expenseList,
+		},
+	}, nil
 }
 
 // extract file data
