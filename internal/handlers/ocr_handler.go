@@ -4,18 +4,21 @@ import (
 	"bytes"
 	"context"
 	"database/sql"
+	"errors"
 	"fmt"
 	"log"
 	pb "ocr-service-dev/internal/proto"
 	"ocr-service-dev/internal/services"
+	"strings"
 	"time"
 
 	_ "github.com/lib/pq"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/service/s3"
+	s3Types "github.com/aws/aws-sdk-go-v2/service/s3/types"
 	"github.com/aws/aws-sdk-go-v2/service/textract"
-	"github.com/aws/aws-sdk-go-v2/service/textract/types"
+	textractTypes "github.com/aws/aws-sdk-go-v2/service/textract/types"
 	"github.com/google/uuid"
 )
 
@@ -243,7 +246,7 @@ func (h *OcrServiceHandler) ExtractFileData(ctx context.Context, req *pb.Extract
 	}
 
 	input := &textract.AnalyzeExpenseInput{
-		Document: &types.Document{
+		Document: &textractTypes.Document{
 			Bytes: req.GetBinary(),
 		},
 	}
@@ -388,7 +391,6 @@ func (h *OcrServiceHandler) ExtractFileData(ctx context.Context, req *pb.Extract
 				continue
 			}
 
-
 			log.Printf("Text: %s Confidence: %v", text, confidence)
 			switch fieldType {
 			case "FILE_PAGE":
@@ -466,4 +468,83 @@ func (h *OcrServiceHandler) ModifyExpenseField(ctx context.Context, req *pb.Modi
 		FieldText:            fieldText.String,
 		Confidence:           confidence.Float64,
 	}, nil
+}
+
+func (h *OcrServiceHandler) DeleteExpense(ctx context.Context, req *pb.DeleteExpenseRequest) (*pb.DeleteExpenseResponse, error) {
+	// TODO call auth service to validate userid
+
+	var objectUrl, previewUrl string
+	var expenseId sql.NullInt32
+
+	err := h.DB.QueryRowContext(ctx, "SELECT object_url, preview_url from expenses where id=$1", req.ExpenseId).Scan(&objectUrl, &previewUrl)
+	if err != nil {
+		return &pb.DeleteExpenseResponse{
+			ExpenseDeleted:    false,
+			ActionDescription: fmt.Sprintf("Failed to select expense: %s", err.Error()),
+		}, nil
+	}
+
+	// retrieve s3 object metadata to check existence
+	objectKey := aws.String(extractKeyFromObjectURL(objectUrl))
+	_, err = h.S3Client.HeadObject(ctx, &s3.HeadObjectInput{
+		Bucket: aws.String("sobaii-expenses-us-east-1"),
+		Key:    objectKey,
+	})
+	if err != nil {
+		var notFound *s3Types.NotFound
+		if errors.As(err, &notFound) {
+			return &pb.DeleteExpenseResponse{
+				ExpenseDeleted:    false,
+				ActionDescription: fmt.Sprintf("Object does not exist: %v", objectKey),
+			}, nil
+		}
+		log.Printf("Failed to check object existence: %v", err)
+		return nil, err // Some other s3 error occurred
+	}
+
+	if objectUrl == previewUrl {
+		_, err = h.S3Client.DeleteObject(ctx, &s3.DeleteObjectInput{
+			Bucket: aws.String("sobaii-expenses-us-east-1"),
+			Key:    aws.String(extractKeyFromObjectURL(objectUrl)),
+		})
+
+	} else {
+		_, err = h.S3Client.DeleteObjects(ctx, &s3.DeleteObjectsInput{
+			Bucket: aws.String("sobaii-expenses-us-east-1"),
+			Delete: &s3Types.Delete{
+				Objects: []s3Types.ObjectIdentifier{
+					{Key: objectKey},
+					{Key: aws.String(extractKeyFromObjectURL(previewUrl))},
+				},
+			},
+		})
+	}
+	if err != nil {
+		return &pb.DeleteExpenseResponse{
+			ExpenseDeleted:    false,
+			ActionDescription: fmt.Sprintf("Failed to delete s3 objects: %s", err.Error()),
+		}, nil
+	}
+
+	err = h.DB.QueryRowContext(ctx, "delete from expenses where id=$1 returning id", req.ExpenseId).Scan(&expenseId)
+	if err != nil {
+		return &pb.DeleteExpenseResponse{
+			ExpenseDeleted:    false,
+			ActionDescription: fmt.Sprintf("Failed to delete expense record: %s", err.Error()),
+		}, nil
+	}
+
+	return &pb.DeleteExpenseResponse{
+		ExpenseDeleted:    true,
+		ActionDescription: "Expense record successfully deleted.",
+		ExpenseId:         uint32(expenseId.Int32),
+	}, nil
+}
+
+func extractKeyFromObjectURL(objectURL string) string {
+	parts := strings.Split(objectURL, ".com/")
+	if len(parts) == 2 {
+		return parts[1]
+	}
+	return ""
 }

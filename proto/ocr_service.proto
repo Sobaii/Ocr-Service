@@ -42,6 +42,11 @@ message ModifyExpenseFieldRequest {
     string field_text = 4;
 }
 
+message DeleteExpenseRequest {
+    string user_id = 1;
+    uint32 expense_id = 2;
+}
+
 message ExpenseField {
     string field_type = 1;
     string text = 2;
@@ -117,10 +122,17 @@ message ModifyExpenseFieldResponse {
     double confidence = 6;
 }
 
+message DeleteExpenseResponse {
+    bool expense_deleted = 1;
+    string action_description = 2;
+    uint32 expense_id = 3;
+}
+
 service OcrService {
     rpc CreateFolder (FolderCreationRequest) returns (FolderCreationResponse);
     rpc SearchFolders (FolderSearchRequest) returns (FolderSearchResponse);
     rpc SearchFileData (SearchFileRequest) returns (SearchFileResponse);
     rpc ExtractFileData (ExtractFileRequest) returns (ExtractFileResponse);
     rpc ModifyExpenseField (ModifyExpenseFieldRequest) returns (ModifyExpenseFieldResponse);
+    rpc DeleteExpense (DeleteExpenseRequest) returns (DeleteExpenseResponse);
 }

@@ -24,6 +24,7 @@ const (
 	OcrService_SearchFileData_FullMethodName     = "/ocr_service.OcrService/SearchFileData"
 	OcrService_ExtractFileData_FullMethodName    = "/ocr_service.OcrService/ExtractFileData"
 	OcrService_ModifyExpenseField_FullMethodName = "/ocr_service.OcrService/ModifyExpenseField"
+	OcrService_DeleteExpense_FullMethodName      = "/ocr_service.OcrService/DeleteExpense"
 )
 
 // OcrServiceClient is the client API for OcrService service.
@@ -35,6 +36,7 @@ type OcrServiceClient interface {
 	SearchFileData(ctx context.Context, in *SearchFileRequest, opts ...grpc.CallOption) (*SearchFileResponse, error)
 	ExtractFileData(ctx context.Context, in *ExtractFileRequest, opts ...grpc.CallOption) (*ExtractFileResponse, error)
 	ModifyExpenseField(ctx context.Context, in *ModifyExpenseFieldRequest, opts ...grpc.CallOption) (*ModifyExpenseFieldResponse, error)
+	DeleteExpense(ctx context.Context, in *DeleteExpenseRequest, opts ...grpc.CallOption) (*DeleteExpenseResponse, error)
 }
 
 type ocrServiceClient struct {
@@ -95,6 +97,16 @@ func (c *ocrServiceClient) ModifyExpenseField(ctx context.Context, in *ModifyExp
 	return out, nil
 }
 
+func (c *ocrServiceClient) DeleteExpense(ctx context.Context, in *DeleteExpenseRequest, opts ...grpc.CallOption) (*DeleteExpenseResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(DeleteExpenseResponse)
+	err := c.cc.Invoke(ctx, OcrService_DeleteExpense_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // OcrServiceServer is the server API for OcrService service.
 // All implementations must embed UnimplementedOcrServiceServer
 // for forward compatibility
@@ -104,6 +116,7 @@ type OcrServiceServer interface {
 	SearchFileData(context.Context, *SearchFileRequest) (*SearchFileResponse, error)
 	ExtractFileData(context.Context, *ExtractFileRequest) (*ExtractFileResponse, error)
 	ModifyExpenseField(context.Context, *ModifyExpenseFieldRequest) (*ModifyExpenseFieldResponse, error)
+	DeleteExpense(context.Context, *DeleteExpenseRequest) (*DeleteExpenseResponse, error)
 	mustEmbedUnimplementedOcrServiceServer()
 }
 
@@ -125,6 +138,9 @@ func (UnimplementedOcrServiceServer) ExtractFileData(context.Context, *ExtractFi
 }
 func (UnimplementedOcrServiceServer) ModifyExpenseField(context.Context, *ModifyExpenseFieldRequest) (*ModifyExpenseFieldResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ModifyExpenseField not implemented")
+}
+func (UnimplementedOcrServiceServer) DeleteExpense(context.Context, *DeleteExpenseRequest) (*DeleteExpenseResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeleteExpense not implemented")
 }
 func (UnimplementedOcrServiceServer) mustEmbedUnimplementedOcrServiceServer() {}
 
@@ -229,6 +245,24 @@ func _OcrService_ModifyExpenseField_Handler(srv interface{}, ctx context.Context
 	return interceptor(ctx, in, info, handler)
 }
 
+func _OcrService_DeleteExpense_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeleteExpenseRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(OcrServiceServer).DeleteExpense(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: OcrService_DeleteExpense_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(OcrServiceServer).DeleteExpense(ctx, req.(*DeleteExpenseRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // OcrService_ServiceDesc is the grpc.ServiceDesc for OcrService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -255,6 +289,10 @@ var OcrService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "ModifyExpenseField",
 			Handler:    _OcrService_ModifyExpenseField_Handler,
+		},
+		{
+			MethodName: "DeleteExpense",
+			Handler:    _OcrService_DeleteExpense_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

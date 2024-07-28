@@ -395,6 +395,61 @@ func (x *ModifyExpenseFieldRequest) GetFieldText() string {
 	return ""
 }
 
+type DeleteExpenseRequest struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	UserId    string `protobuf:"bytes,1,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
+	ExpenseId uint32 `protobuf:"varint,2,opt,name=expense_id,json=expenseId,proto3" json:"expense_id,omitempty"`
+}
+
+func (x *DeleteExpenseRequest) Reset() {
+	*x = DeleteExpenseRequest{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_proto_ocr_service_proto_msgTypes[5]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *DeleteExpenseRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*DeleteExpenseRequest) ProtoMessage() {}
+
+func (x *DeleteExpenseRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_ocr_service_proto_msgTypes[5]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use DeleteExpenseRequest.ProtoReflect.Descriptor instead.
+func (*DeleteExpenseRequest) Descriptor() ([]byte, []int) {
+	return file_proto_ocr_service_proto_rawDescGZIP(), []int{5}
+}
+
+func (x *DeleteExpenseRequest) GetUserId() string {
+	if x != nil {
+		return x.UserId
+	}
+	return ""
+}
+
+func (x *DeleteExpenseRequest) GetExpenseId() uint32 {
+	if x != nil {
+		return x.ExpenseId
+	}
+	return 0
+}
+
 type ExpenseField struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -408,7 +463,7 @@ type ExpenseField struct {
 func (x *ExpenseField) Reset() {
 	*x = ExpenseField{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_proto_ocr_service_proto_msgTypes[5]
+		mi := &file_proto_ocr_service_proto_msgTypes[6]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -421,7 +476,7 @@ func (x *ExpenseField) String() string {
 func (*ExpenseField) ProtoMessage() {}
 
 func (x *ExpenseField) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_ocr_service_proto_msgTypes[5]
+	mi := &file_proto_ocr_service_proto_msgTypes[6]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -434,7 +489,7 @@ func (x *ExpenseField) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ExpenseField.ProtoReflect.Descriptor instead.
 func (*ExpenseField) Descriptor() ([]byte, []int) {
-	return file_proto_ocr_service_proto_rawDescGZIP(), []int{5}
+	return file_proto_ocr_service_proto_rawDescGZIP(), []int{6}
 }
 
 func (x *ExpenseField) GetFieldType() string {
@@ -487,7 +542,7 @@ type FileExtract struct {
 func (x *FileExtract) Reset() {
 	*x = FileExtract{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_proto_ocr_service_proto_msgTypes[6]
+		mi := &file_proto_ocr_service_proto_msgTypes[7]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -500,7 +555,7 @@ func (x *FileExtract) String() string {
 func (*FileExtract) ProtoMessage() {}
 
 func (x *FileExtract) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_ocr_service_proto_msgTypes[6]
+	mi := &file_proto_ocr_service_proto_msgTypes[7]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -513,7 +568,7 @@ func (x *FileExtract) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use FileExtract.ProtoReflect.Descriptor instead.
 func (*FileExtract) Descriptor() ([]byte, []int) {
-	return file_proto_ocr_service_proto_rawDescGZIP(), []int{6}
+	return file_proto_ocr_service_proto_rawDescGZIP(), []int{7}
 }
 
 func (x *FileExtract) GetFilePage() *ExpenseField {
@@ -661,7 +716,7 @@ type ExpenseItem struct {
 func (x *ExpenseItem) Reset() {
 	*x = ExpenseItem{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_proto_ocr_service_proto_msgTypes[7]
+		mi := &file_proto_ocr_service_proto_msgTypes[8]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -674,7 +729,7 @@ func (x *ExpenseItem) String() string {
 func (*ExpenseItem) ProtoMessage() {}
 
 func (x *ExpenseItem) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_ocr_service_proto_msgTypes[7]
+	mi := &file_proto_ocr_service_proto_msgTypes[8]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -687,7 +742,7 @@ func (x *ExpenseItem) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ExpenseItem.ProtoReflect.Descriptor instead.
 func (*ExpenseItem) Descriptor() ([]byte, []int) {
-	return file_proto_ocr_service_proto_rawDescGZIP(), []int{7}
+	return file_proto_ocr_service_proto_rawDescGZIP(), []int{8}
 }
 
 func (x *ExpenseItem) GetFolderName() string {
@@ -715,7 +770,7 @@ type Expenses struct {
 func (x *Expenses) Reset() {
 	*x = Expenses{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_proto_ocr_service_proto_msgTypes[8]
+		mi := &file_proto_ocr_service_proto_msgTypes[9]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -728,7 +783,7 @@ func (x *Expenses) String() string {
 func (*Expenses) ProtoMessage() {}
 
 func (x *Expenses) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_ocr_service_proto_msgTypes[8]
+	mi := &file_proto_ocr_service_proto_msgTypes[9]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -741,7 +796,7 @@ func (x *Expenses) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Expenses.ProtoReflect.Descriptor instead.
 func (*Expenses) Descriptor() ([]byte, []int) {
-	return file_proto_ocr_service_proto_rawDescGZIP(), []int{8}
+	return file_proto_ocr_service_proto_rawDescGZIP(), []int{9}
 }
 
 func (x *Expenses) GetInfo() []*ExpenseItem {
@@ -764,7 +819,7 @@ type FolderSearchResponse struct {
 func (x *FolderSearchResponse) Reset() {
 	*x = FolderSearchResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_proto_ocr_service_proto_msgTypes[9]
+		mi := &file_proto_ocr_service_proto_msgTypes[10]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -777,7 +832,7 @@ func (x *FolderSearchResponse) String() string {
 func (*FolderSearchResponse) ProtoMessage() {}
 
 func (x *FolderSearchResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_ocr_service_proto_msgTypes[9]
+	mi := &file_proto_ocr_service_proto_msgTypes[10]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -790,7 +845,7 @@ func (x *FolderSearchResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use FolderSearchResponse.ProtoReflect.Descriptor instead.
 func (*FolderSearchResponse) Descriptor() ([]byte, []int) {
-	return file_proto_ocr_service_proto_rawDescGZIP(), []int{9}
+	return file_proto_ocr_service_proto_rawDescGZIP(), []int{10}
 }
 
 func (x *FolderSearchResponse) GetFolderFound() bool {
@@ -828,7 +883,7 @@ type FolderCreationResponse struct {
 func (x *FolderCreationResponse) Reset() {
 	*x = FolderCreationResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_proto_ocr_service_proto_msgTypes[10]
+		mi := &file_proto_ocr_service_proto_msgTypes[11]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -841,7 +896,7 @@ func (x *FolderCreationResponse) String() string {
 func (*FolderCreationResponse) ProtoMessage() {}
 
 func (x *FolderCreationResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_ocr_service_proto_msgTypes[10]
+	mi := &file_proto_ocr_service_proto_msgTypes[11]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -854,7 +909,7 @@ func (x *FolderCreationResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use FolderCreationResponse.ProtoReflect.Descriptor instead.
 func (*FolderCreationResponse) Descriptor() ([]byte, []int) {
-	return file_proto_ocr_service_proto_rawDescGZIP(), []int{10}
+	return file_proto_ocr_service_proto_rawDescGZIP(), []int{11}
 }
 
 func (x *FolderCreationResponse) GetFolderCreated() bool {
@@ -900,7 +955,7 @@ type SearchFileResponse struct {
 func (x *SearchFileResponse) Reset() {
 	*x = SearchFileResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_proto_ocr_service_proto_msgTypes[11]
+		mi := &file_proto_ocr_service_proto_msgTypes[12]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -913,7 +968,7 @@ func (x *SearchFileResponse) String() string {
 func (*SearchFileResponse) ProtoMessage() {}
 
 func (x *SearchFileResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_ocr_service_proto_msgTypes[11]
+	mi := &file_proto_ocr_service_proto_msgTypes[12]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -926,7 +981,7 @@ func (x *SearchFileResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use SearchFileResponse.ProtoReflect.Descriptor instead.
 func (*SearchFileResponse) Descriptor() ([]byte, []int) {
-	return file_proto_ocr_service_proto_rawDescGZIP(), []int{11}
+	return file_proto_ocr_service_proto_rawDescGZIP(), []int{12}
 }
 
 func (x *SearchFileResponse) GetFileFound() bool {
@@ -979,7 +1034,7 @@ type ExtractFileResponse struct {
 func (x *ExtractFileResponse) Reset() {
 	*x = ExtractFileResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_proto_ocr_service_proto_msgTypes[12]
+		mi := &file_proto_ocr_service_proto_msgTypes[13]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -992,7 +1047,7 @@ func (x *ExtractFileResponse) String() string {
 func (*ExtractFileResponse) ProtoMessage() {}
 
 func (x *ExtractFileResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_ocr_service_proto_msgTypes[12]
+	mi := &file_proto_ocr_service_proto_msgTypes[13]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1005,7 +1060,7 @@ func (x *ExtractFileResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ExtractFileResponse.ProtoReflect.Descriptor instead.
 func (*ExtractFileResponse) Descriptor() ([]byte, []int) {
-	return file_proto_ocr_service_proto_rawDescGZIP(), []int{12}
+	return file_proto_ocr_service_proto_rawDescGZIP(), []int{13}
 }
 
 func (x *ExtractFileResponse) GetFileExtracted() bool {
@@ -1059,7 +1114,7 @@ type ModifyExpenseFieldResponse struct {
 func (x *ModifyExpenseFieldResponse) Reset() {
 	*x = ModifyExpenseFieldResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_proto_ocr_service_proto_msgTypes[13]
+		mi := &file_proto_ocr_service_proto_msgTypes[14]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1072,7 +1127,7 @@ func (x *ModifyExpenseFieldResponse) String() string {
 func (*ModifyExpenseFieldResponse) ProtoMessage() {}
 
 func (x *ModifyExpenseFieldResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_ocr_service_proto_msgTypes[13]
+	mi := &file_proto_ocr_service_proto_msgTypes[14]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1085,7 +1140,7 @@ func (x *ModifyExpenseFieldResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ModifyExpenseFieldResponse.ProtoReflect.Descriptor instead.
 func (*ModifyExpenseFieldResponse) Descriptor() ([]byte, []int) {
-	return file_proto_ocr_service_proto_rawDescGZIP(), []int{13}
+	return file_proto_ocr_service_proto_rawDescGZIP(), []int{14}
 }
 
 func (x *ModifyExpenseFieldResponse) GetExpenseFieldModified() bool {
@@ -1126,6 +1181,69 @@ func (x *ModifyExpenseFieldResponse) GetFieldText() string {
 func (x *ModifyExpenseFieldResponse) GetConfidence() float64 {
 	if x != nil {
 		return x.Confidence
+	}
+	return 0
+}
+
+type DeleteExpenseResponse struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	ExpenseDeleted    bool   `protobuf:"varint,1,opt,name=expense_deleted,json=expenseDeleted,proto3" json:"expense_deleted,omitempty"`
+	ActionDescription string `protobuf:"bytes,2,opt,name=action_description,json=actionDescription,proto3" json:"action_description,omitempty"`
+	ExpenseId         uint32 `protobuf:"varint,3,opt,name=expense_id,json=expenseId,proto3" json:"expense_id,omitempty"`
+}
+
+func (x *DeleteExpenseResponse) Reset() {
+	*x = DeleteExpenseResponse{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_proto_ocr_service_proto_msgTypes[15]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *DeleteExpenseResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*DeleteExpenseResponse) ProtoMessage() {}
+
+func (x *DeleteExpenseResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_ocr_service_proto_msgTypes[15]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use DeleteExpenseResponse.ProtoReflect.Descriptor instead.
+func (*DeleteExpenseResponse) Descriptor() ([]byte, []int) {
+	return file_proto_ocr_service_proto_rawDescGZIP(), []int{15}
+}
+
+func (x *DeleteExpenseResponse) GetExpenseDeleted() bool {
+	if x != nil {
+		return x.ExpenseDeleted
+	}
+	return false
+}
+
+func (x *DeleteExpenseResponse) GetActionDescription() string {
+	if x != nil {
+		return x.ActionDescription
+	}
+	return ""
+}
+
+func (x *DeleteExpenseResponse) GetExpenseId() uint32 {
+	if x != nil {
+		return x.ExpenseId
 	}
 	return 0
 }
@@ -1171,7 +1289,12 @@ var file_proto_ocr_service_proto_rawDesc = []byte{
 	0x0a, 0x66, 0x69, 0x65, 0x6c, 0x64, 0x5f, 0x74, 0x79, 0x70, 0x65, 0x18, 0x03, 0x20, 0x01, 0x28,
 	0x09, 0x52, 0x09, 0x66, 0x69, 0x65, 0x6c, 0x64, 0x54, 0x79, 0x70, 0x65, 0x12, 0x1d, 0x0a, 0x0a,
 	0x66, 0x69, 0x65, 0x6c, 0x64, 0x5f, 0x74, 0x65, 0x78, 0x74, 0x18, 0x04, 0x20, 0x01, 0x28, 0x09,
-	0x52, 0x09, 0x66, 0x69, 0x65, 0x6c, 0x64, 0x54, 0x65, 0x78, 0x74, 0x22, 0x61, 0x0a, 0x0c, 0x45,
+	0x52, 0x09, 0x66, 0x69, 0x65, 0x6c, 0x64, 0x54, 0x65, 0x78, 0x74, 0x22, 0x4e, 0x0a, 0x14, 0x44,
+	0x65, 0x6c, 0x65, 0x74, 0x65, 0x45, 0x78, 0x70, 0x65, 0x6e, 0x73, 0x65, 0x52, 0x65, 0x71, 0x75,
+	0x65, 0x73, 0x74, 0x12, 0x17, 0x0a, 0x07, 0x75, 0x73, 0x65, 0x72, 0x5f, 0x69, 0x64, 0x18, 0x01,
+	0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x75, 0x73, 0x65, 0x72, 0x49, 0x64, 0x12, 0x1d, 0x0a, 0x0a,
+	0x65, 0x78, 0x70, 0x65, 0x6e, 0x73, 0x65, 0x5f, 0x69, 0x64, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0d,
+	0x52, 0x09, 0x65, 0x78, 0x70, 0x65, 0x6e, 0x73, 0x65, 0x49, 0x64, 0x22, 0x61, 0x0a, 0x0c, 0x45,
 	0x78, 0x70, 0x65, 0x6e, 0x73, 0x65, 0x46, 0x69, 0x65, 0x6c, 0x64, 0x12, 0x1d, 0x0a, 0x0a, 0x66,
 	0x69, 0x65, 0x6c, 0x64, 0x5f, 0x74, 0x79, 0x70, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52,
 	0x09, 0x66, 0x69, 0x65, 0x6c, 0x64, 0x54, 0x79, 0x70, 0x65, 0x12, 0x12, 0x0a, 0x04, 0x74, 0x65,
@@ -1311,43 +1434,58 @@ var file_proto_ocr_service_proto_rawDesc = []byte{
 	0x6c, 0x64, 0x5f, 0x74, 0x65, 0x78, 0x74, 0x18, 0x05, 0x20, 0x01, 0x28, 0x09, 0x52, 0x09, 0x66,
 	0x69, 0x65, 0x6c, 0x64, 0x54, 0x65, 0x78, 0x74, 0x12, 0x1e, 0x0a, 0x0a, 0x63, 0x6f, 0x6e, 0x66,
 	0x69, 0x64, 0x65, 0x6e, 0x63, 0x65, 0x18, 0x06, 0x20, 0x01, 0x28, 0x01, 0x52, 0x0a, 0x63, 0x6f,
-	0x6e, 0x66, 0x69, 0x64, 0x65, 0x6e, 0x63, 0x65, 0x2a, 0x59, 0x0a, 0x08, 0x4d, 0x69, 0x6d, 0x65,
-	0x54, 0x79, 0x70, 0x65, 0x12, 0x19, 0x0a, 0x15, 0x4d, 0x49, 0x4d, 0x45, 0x5f, 0x54, 0x59, 0x50,
-	0x45, 0x5f, 0x55, 0x4e, 0x53, 0x50, 0x45, 0x43, 0x49, 0x46, 0x49, 0x45, 0x44, 0x10, 0x00, 0x12,
-	0x0e, 0x0a, 0x0a, 0x49, 0x4d, 0x41, 0x47, 0x45, 0x5f, 0x4a, 0x50, 0x45, 0x47, 0x10, 0x01, 0x12,
-	0x0d, 0x0a, 0x09, 0x49, 0x4d, 0x41, 0x47, 0x45, 0x5f, 0x50, 0x4e, 0x47, 0x10, 0x02, 0x12, 0x13,
-	0x0a, 0x0f, 0x41, 0x50, 0x50, 0x4c, 0x49, 0x43, 0x41, 0x54, 0x49, 0x4f, 0x4e, 0x5f, 0x50, 0x44,
-	0x46, 0x10, 0x03, 0x32, 0xcb, 0x03, 0x0a, 0x0a, 0x4f, 0x63, 0x72, 0x53, 0x65, 0x72, 0x76, 0x69,
-	0x63, 0x65, 0x12, 0x57, 0x0a, 0x0c, 0x43, 0x72, 0x65, 0x61, 0x74, 0x65, 0x46, 0x6f, 0x6c, 0x64,
-	0x65, 0x72, 0x12, 0x22, 0x2e, 0x6f, 0x63, 0x72, 0x5f, 0x73, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65,
-	0x2e, 0x46, 0x6f, 0x6c, 0x64, 0x65, 0x72, 0x43, 0x72, 0x65, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x52,
-	0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x23, 0x2e, 0x6f, 0x63, 0x72, 0x5f, 0x73, 0x65, 0x72,
-	0x76, 0x69, 0x63, 0x65, 0x2e, 0x46, 0x6f, 0x6c, 0x64, 0x65, 0x72, 0x43, 0x72, 0x65, 0x61, 0x74,
-	0x69, 0x6f, 0x6e, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x54, 0x0a, 0x0d, 0x53,
-	0x65, 0x61, 0x72, 0x63, 0x68, 0x46, 0x6f, 0x6c, 0x64, 0x65, 0x72, 0x73, 0x12, 0x20, 0x2e, 0x6f,
-	0x63, 0x72, 0x5f, 0x73, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x2e, 0x46, 0x6f, 0x6c, 0x64, 0x65,
-	0x72, 0x53, 0x65, 0x61, 0x72, 0x63, 0x68, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x21,
-	0x2e, 0x6f, 0x63, 0x72, 0x5f, 0x73, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x2e, 0x46, 0x6f, 0x6c,
-	0x64, 0x65, 0x72, 0x53, 0x65, 0x61, 0x72, 0x63, 0x68, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73,
-	0x65, 0x12, 0x51, 0x0a, 0x0e, 0x53, 0x65, 0x61, 0x72, 0x63, 0x68, 0x46, 0x69, 0x6c, 0x65, 0x44,
-	0x61, 0x74, 0x61, 0x12, 0x1e, 0x2e, 0x6f, 0x63, 0x72, 0x5f, 0x73, 0x65, 0x72, 0x76, 0x69, 0x63,
-	0x65, 0x2e, 0x53, 0x65, 0x61, 0x72, 0x63, 0x68, 0x46, 0x69, 0x6c, 0x65, 0x52, 0x65, 0x71, 0x75,
-	0x65, 0x73, 0x74, 0x1a, 0x1f, 0x2e, 0x6f, 0x63, 0x72, 0x5f, 0x73, 0x65, 0x72, 0x76, 0x69, 0x63,
-	0x65, 0x2e, 0x53, 0x65, 0x61, 0x72, 0x63, 0x68, 0x46, 0x69, 0x6c, 0x65, 0x52, 0x65, 0x73, 0x70,
-	0x6f, 0x6e, 0x73, 0x65, 0x12, 0x54, 0x0a, 0x0f, 0x45, 0x78, 0x74, 0x72, 0x61, 0x63, 0x74, 0x46,
-	0x69, 0x6c, 0x65, 0x44, 0x61, 0x74, 0x61, 0x12, 0x1f, 0x2e, 0x6f, 0x63, 0x72, 0x5f, 0x73, 0x65,
-	0x72, 0x76, 0x69, 0x63, 0x65, 0x2e, 0x45, 0x78, 0x74, 0x72, 0x61, 0x63, 0x74, 0x46, 0x69, 0x6c,
-	0x65, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x20, 0x2e, 0x6f, 0x63, 0x72, 0x5f, 0x73,
+	0x6e, 0x66, 0x69, 0x64, 0x65, 0x6e, 0x63, 0x65, 0x22, 0x8e, 0x01, 0x0a, 0x15, 0x44, 0x65, 0x6c,
+	0x65, 0x74, 0x65, 0x45, 0x78, 0x70, 0x65, 0x6e, 0x73, 0x65, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e,
+	0x73, 0x65, 0x12, 0x27, 0x0a, 0x0f, 0x65, 0x78, 0x70, 0x65, 0x6e, 0x73, 0x65, 0x5f, 0x64, 0x65,
+	0x6c, 0x65, 0x74, 0x65, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x08, 0x52, 0x0e, 0x65, 0x78, 0x70,
+	0x65, 0x6e, 0x73, 0x65, 0x44, 0x65, 0x6c, 0x65, 0x74, 0x65, 0x64, 0x12, 0x2d, 0x0a, 0x12, 0x61,
+	0x63, 0x74, 0x69, 0x6f, 0x6e, 0x5f, 0x64, 0x65, 0x73, 0x63, 0x72, 0x69, 0x70, 0x74, 0x69, 0x6f,
+	0x6e, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x11, 0x61, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x44,
+	0x65, 0x73, 0x63, 0x72, 0x69, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x12, 0x1d, 0x0a, 0x0a, 0x65, 0x78,
+	0x70, 0x65, 0x6e, 0x73, 0x65, 0x5f, 0x69, 0x64, 0x18, 0x03, 0x20, 0x01, 0x28, 0x0d, 0x52, 0x09,
+	0x65, 0x78, 0x70, 0x65, 0x6e, 0x73, 0x65, 0x49, 0x64, 0x2a, 0x59, 0x0a, 0x08, 0x4d, 0x69, 0x6d,
+	0x65, 0x54, 0x79, 0x70, 0x65, 0x12, 0x19, 0x0a, 0x15, 0x4d, 0x49, 0x4d, 0x45, 0x5f, 0x54, 0x59,
+	0x50, 0x45, 0x5f, 0x55, 0x4e, 0x53, 0x50, 0x45, 0x43, 0x49, 0x46, 0x49, 0x45, 0x44, 0x10, 0x00,
+	0x12, 0x0e, 0x0a, 0x0a, 0x49, 0x4d, 0x41, 0x47, 0x45, 0x5f, 0x4a, 0x50, 0x45, 0x47, 0x10, 0x01,
+	0x12, 0x0d, 0x0a, 0x09, 0x49, 0x4d, 0x41, 0x47, 0x45, 0x5f, 0x50, 0x4e, 0x47, 0x10, 0x02, 0x12,
+	0x13, 0x0a, 0x0f, 0x41, 0x50, 0x50, 0x4c, 0x49, 0x43, 0x41, 0x54, 0x49, 0x4f, 0x4e, 0x5f, 0x50,
+	0x44, 0x46, 0x10, 0x03, 0x32, 0xa3, 0x04, 0x0a, 0x0a, 0x4f, 0x63, 0x72, 0x53, 0x65, 0x72, 0x76,
+	0x69, 0x63, 0x65, 0x12, 0x57, 0x0a, 0x0c, 0x43, 0x72, 0x65, 0x61, 0x74, 0x65, 0x46, 0x6f, 0x6c,
+	0x64, 0x65, 0x72, 0x12, 0x22, 0x2e, 0x6f, 0x63, 0x72, 0x5f, 0x73, 0x65, 0x72, 0x76, 0x69, 0x63,
+	0x65, 0x2e, 0x46, 0x6f, 0x6c, 0x64, 0x65, 0x72, 0x43, 0x72, 0x65, 0x61, 0x74, 0x69, 0x6f, 0x6e,
+	0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x23, 0x2e, 0x6f, 0x63, 0x72, 0x5f, 0x73, 0x65,
+	0x72, 0x76, 0x69, 0x63, 0x65, 0x2e, 0x46, 0x6f, 0x6c, 0x64, 0x65, 0x72, 0x43, 0x72, 0x65, 0x61,
+	0x74, 0x69, 0x6f, 0x6e, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x54, 0x0a, 0x0d,
+	0x53, 0x65, 0x61, 0x72, 0x63, 0x68, 0x46, 0x6f, 0x6c, 0x64, 0x65, 0x72, 0x73, 0x12, 0x20, 0x2e,
+	0x6f, 0x63, 0x72, 0x5f, 0x73, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x2e, 0x46, 0x6f, 0x6c, 0x64,
+	0x65, 0x72, 0x53, 0x65, 0x61, 0x72, 0x63, 0x68, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a,
+	0x21, 0x2e, 0x6f, 0x63, 0x72, 0x5f, 0x73, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x2e, 0x46, 0x6f,
+	0x6c, 0x64, 0x65, 0x72, 0x53, 0x65, 0x61, 0x72, 0x63, 0x68, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e,
+	0x73, 0x65, 0x12, 0x51, 0x0a, 0x0e, 0x53, 0x65, 0x61, 0x72, 0x63, 0x68, 0x46, 0x69, 0x6c, 0x65,
+	0x44, 0x61, 0x74, 0x61, 0x12, 0x1e, 0x2e, 0x6f, 0x63, 0x72, 0x5f, 0x73, 0x65, 0x72, 0x76, 0x69,
+	0x63, 0x65, 0x2e, 0x53, 0x65, 0x61, 0x72, 0x63, 0x68, 0x46, 0x69, 0x6c, 0x65, 0x52, 0x65, 0x71,
+	0x75, 0x65, 0x73, 0x74, 0x1a, 0x1f, 0x2e, 0x6f, 0x63, 0x72, 0x5f, 0x73, 0x65, 0x72, 0x76, 0x69,
+	0x63, 0x65, 0x2e, 0x53, 0x65, 0x61, 0x72, 0x63, 0x68, 0x46, 0x69, 0x6c, 0x65, 0x52, 0x65, 0x73,
+	0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x54, 0x0a, 0x0f, 0x45, 0x78, 0x74, 0x72, 0x61, 0x63, 0x74,
+	0x46, 0x69, 0x6c, 0x65, 0x44, 0x61, 0x74, 0x61, 0x12, 0x1f, 0x2e, 0x6f, 0x63, 0x72, 0x5f, 0x73,
 	0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x2e, 0x45, 0x78, 0x74, 0x72, 0x61, 0x63, 0x74, 0x46, 0x69,
-	0x6c, 0x65, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x65, 0x0a, 0x12, 0x4d, 0x6f,
-	0x64, 0x69, 0x66, 0x79, 0x45, 0x78, 0x70, 0x65, 0x6e, 0x73, 0x65, 0x46, 0x69, 0x65, 0x6c, 0x64,
-	0x12, 0x26, 0x2e, 0x6f, 0x63, 0x72, 0x5f, 0x73, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x2e, 0x4d,
+	0x6c, 0x65, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x20, 0x2e, 0x6f, 0x63, 0x72, 0x5f,
+	0x73, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x2e, 0x45, 0x78, 0x74, 0x72, 0x61, 0x63, 0x74, 0x46,
+	0x69, 0x6c, 0x65, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x65, 0x0a, 0x12, 0x4d,
 	0x6f, 0x64, 0x69, 0x66, 0x79, 0x45, 0x78, 0x70, 0x65, 0x6e, 0x73, 0x65, 0x46, 0x69, 0x65, 0x6c,
-	0x64, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x27, 0x2e, 0x6f, 0x63, 0x72, 0x5f, 0x73,
-	0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x2e, 0x4d, 0x6f, 0x64, 0x69, 0x66, 0x79, 0x45, 0x78, 0x70,
-	0x65, 0x6e, 0x73, 0x65, 0x46, 0x69, 0x65, 0x6c, 0x64, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73,
-	0x65, 0x42, 0x10, 0x5a, 0x0e, 0x69, 0x6e, 0x74, 0x65, 0x72, 0x6e, 0x61, 0x6c, 0x2f, 0x70, 0x72,
-	0x6f, 0x74, 0x6f, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x64, 0x12, 0x26, 0x2e, 0x6f, 0x63, 0x72, 0x5f, 0x73, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x2e,
+	0x4d, 0x6f, 0x64, 0x69, 0x66, 0x79, 0x45, 0x78, 0x70, 0x65, 0x6e, 0x73, 0x65, 0x46, 0x69, 0x65,
+	0x6c, 0x64, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x27, 0x2e, 0x6f, 0x63, 0x72, 0x5f,
+	0x73, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x2e, 0x4d, 0x6f, 0x64, 0x69, 0x66, 0x79, 0x45, 0x78,
+	0x70, 0x65, 0x6e, 0x73, 0x65, 0x46, 0x69, 0x65, 0x6c, 0x64, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e,
+	0x73, 0x65, 0x12, 0x56, 0x0a, 0x0d, 0x44, 0x65, 0x6c, 0x65, 0x74, 0x65, 0x45, 0x78, 0x70, 0x65,
+	0x6e, 0x73, 0x65, 0x12, 0x21, 0x2e, 0x6f, 0x63, 0x72, 0x5f, 0x73, 0x65, 0x72, 0x76, 0x69, 0x63,
+	0x65, 0x2e, 0x44, 0x65, 0x6c, 0x65, 0x74, 0x65, 0x45, 0x78, 0x70, 0x65, 0x6e, 0x73, 0x65, 0x52,
+	0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x22, 0x2e, 0x6f, 0x63, 0x72, 0x5f, 0x73, 0x65, 0x72,
+	0x76, 0x69, 0x63, 0x65, 0x2e, 0x44, 0x65, 0x6c, 0x65, 0x74, 0x65, 0x45, 0x78, 0x70, 0x65, 0x6e,
+	0x73, 0x65, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x42, 0x10, 0x5a, 0x0e, 0x69, 0x6e,
+	0x74, 0x65, 0x72, 0x6e, 0x61, 0x6c, 0x2f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x06, 0x70, 0x72,
+	0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -1363,7 +1501,7 @@ func file_proto_ocr_service_proto_rawDescGZIP() []byte {
 }
 
 var file_proto_ocr_service_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
-var file_proto_ocr_service_proto_msgTypes = make([]protoimpl.MessageInfo, 14)
+var file_proto_ocr_service_proto_msgTypes = make([]protoimpl.MessageInfo, 16)
 var file_proto_ocr_service_proto_goTypes = []interface{}{
 	(MimeType)(0),                      // 0: ocr_service.MimeType
 	(*ExtractFileRequest)(nil),         // 1: ocr_service.ExtractFileRequest
@@ -1371,50 +1509,54 @@ var file_proto_ocr_service_proto_goTypes = []interface{}{
 	(*FolderCreationRequest)(nil),      // 3: ocr_service.FolderCreationRequest
 	(*FolderSearchRequest)(nil),        // 4: ocr_service.FolderSearchRequest
 	(*ModifyExpenseFieldRequest)(nil),  // 5: ocr_service.ModifyExpenseFieldRequest
-	(*ExpenseField)(nil),               // 6: ocr_service.ExpenseField
-	(*FileExtract)(nil),                // 7: ocr_service.FileExtract
-	(*ExpenseItem)(nil),                // 8: ocr_service.ExpenseItem
-	(*Expenses)(nil),                   // 9: ocr_service.Expenses
-	(*FolderSearchResponse)(nil),       // 10: ocr_service.FolderSearchResponse
-	(*FolderCreationResponse)(nil),     // 11: ocr_service.FolderCreationResponse
-	(*SearchFileResponse)(nil),         // 12: ocr_service.SearchFileResponse
-	(*ExtractFileResponse)(nil),        // 13: ocr_service.ExtractFileResponse
-	(*ModifyExpenseFieldResponse)(nil), // 14: ocr_service.ModifyExpenseFieldResponse
+	(*DeleteExpenseRequest)(nil),       // 6: ocr_service.DeleteExpenseRequest
+	(*ExpenseField)(nil),               // 7: ocr_service.ExpenseField
+	(*FileExtract)(nil),                // 8: ocr_service.FileExtract
+	(*ExpenseItem)(nil),                // 9: ocr_service.ExpenseItem
+	(*Expenses)(nil),                   // 10: ocr_service.Expenses
+	(*FolderSearchResponse)(nil),       // 11: ocr_service.FolderSearchResponse
+	(*FolderCreationResponse)(nil),     // 12: ocr_service.FolderCreationResponse
+	(*SearchFileResponse)(nil),         // 13: ocr_service.SearchFileResponse
+	(*ExtractFileResponse)(nil),        // 14: ocr_service.ExtractFileResponse
+	(*ModifyExpenseFieldResponse)(nil), // 15: ocr_service.ModifyExpenseFieldResponse
+	(*DeleteExpenseResponse)(nil),      // 16: ocr_service.DeleteExpenseResponse
 }
 var file_proto_ocr_service_proto_depIdxs = []int32{
 	0,  // 0: ocr_service.ExtractFileRequest.mime_type:type_name -> ocr_service.MimeType
-	6,  // 1: ocr_service.FileExtract.file_page:type_name -> ocr_service.ExpenseField
-	6,  // 2: ocr_service.FileExtract.file_name:type_name -> ocr_service.ExpenseField
-	6,  // 3: ocr_service.FileExtract.invoice_receipt_date:type_name -> ocr_service.ExpenseField
-	6,  // 4: ocr_service.FileExtract.vendor_name:type_name -> ocr_service.ExpenseField
-	6,  // 5: ocr_service.FileExtract.vendor_address:type_name -> ocr_service.ExpenseField
-	6,  // 6: ocr_service.FileExtract.total:type_name -> ocr_service.ExpenseField
-	6,  // 7: ocr_service.FileExtract.subtotal:type_name -> ocr_service.ExpenseField
-	6,  // 8: ocr_service.FileExtract.tax:type_name -> ocr_service.ExpenseField
-	6,  // 9: ocr_service.FileExtract.vendor_phone:type_name -> ocr_service.ExpenseField
-	6,  // 10: ocr_service.FileExtract.street:type_name -> ocr_service.ExpenseField
-	6,  // 11: ocr_service.FileExtract.gratuity:type_name -> ocr_service.ExpenseField
-	6,  // 12: ocr_service.FileExtract.city:type_name -> ocr_service.ExpenseField
-	6,  // 13: ocr_service.FileExtract.state:type_name -> ocr_service.ExpenseField
-	6,  // 14: ocr_service.FileExtract.country:type_name -> ocr_service.ExpenseField
-	6,  // 15: ocr_service.FileExtract.zip_code:type_name -> ocr_service.ExpenseField
-	6,  // 16: ocr_service.FileExtract.category:type_name -> ocr_service.ExpenseField
-	7,  // 17: ocr_service.ExpenseItem.data:type_name -> ocr_service.FileExtract
-	8,  // 18: ocr_service.Expenses.info:type_name -> ocr_service.ExpenseItem
-	9,  // 19: ocr_service.SearchFileResponse.expenses:type_name -> ocr_service.Expenses
-	8,  // 20: ocr_service.ExtractFileResponse.file:type_name -> ocr_service.ExpenseItem
+	7,  // 1: ocr_service.FileExtract.file_page:type_name -> ocr_service.ExpenseField
+	7,  // 2: ocr_service.FileExtract.file_name:type_name -> ocr_service.ExpenseField
+	7,  // 3: ocr_service.FileExtract.invoice_receipt_date:type_name -> ocr_service.ExpenseField
+	7,  // 4: ocr_service.FileExtract.vendor_name:type_name -> ocr_service.ExpenseField
+	7,  // 5: ocr_service.FileExtract.vendor_address:type_name -> ocr_service.ExpenseField
+	7,  // 6: ocr_service.FileExtract.total:type_name -> ocr_service.ExpenseField
+	7,  // 7: ocr_service.FileExtract.subtotal:type_name -> ocr_service.ExpenseField
+	7,  // 8: ocr_service.FileExtract.tax:type_name -> ocr_service.ExpenseField
+	7,  // 9: ocr_service.FileExtract.vendor_phone:type_name -> ocr_service.ExpenseField
+	7,  // 10: ocr_service.FileExtract.street:type_name -> ocr_service.ExpenseField
+	7,  // 11: ocr_service.FileExtract.gratuity:type_name -> ocr_service.ExpenseField
+	7,  // 12: ocr_service.FileExtract.city:type_name -> ocr_service.ExpenseField
+	7,  // 13: ocr_service.FileExtract.state:type_name -> ocr_service.ExpenseField
+	7,  // 14: ocr_service.FileExtract.country:type_name -> ocr_service.ExpenseField
+	7,  // 15: ocr_service.FileExtract.zip_code:type_name -> ocr_service.ExpenseField
+	7,  // 16: ocr_service.FileExtract.category:type_name -> ocr_service.ExpenseField
+	8,  // 17: ocr_service.ExpenseItem.data:type_name -> ocr_service.FileExtract
+	9,  // 18: ocr_service.Expenses.info:type_name -> ocr_service.ExpenseItem
+	10, // 19: ocr_service.SearchFileResponse.expenses:type_name -> ocr_service.Expenses
+	9,  // 20: ocr_service.ExtractFileResponse.file:type_name -> ocr_service.ExpenseItem
 	3,  // 21: ocr_service.OcrService.CreateFolder:input_type -> ocr_service.FolderCreationRequest
 	4,  // 22: ocr_service.OcrService.SearchFolders:input_type -> ocr_service.FolderSearchRequest
 	2,  // 23: ocr_service.OcrService.SearchFileData:input_type -> ocr_service.SearchFileRequest
 	1,  // 24: ocr_service.OcrService.ExtractFileData:input_type -> ocr_service.ExtractFileRequest
 	5,  // 25: ocr_service.OcrService.ModifyExpenseField:input_type -> ocr_service.ModifyExpenseFieldRequest
-	11, // 26: ocr_service.OcrService.CreateFolder:output_type -> ocr_service.FolderCreationResponse
-	10, // 27: ocr_service.OcrService.SearchFolders:output_type -> ocr_service.FolderSearchResponse
-	12, // 28: ocr_service.OcrService.SearchFileData:output_type -> ocr_service.SearchFileResponse
-	13, // 29: ocr_service.OcrService.ExtractFileData:output_type -> ocr_service.ExtractFileResponse
-	14, // 30: ocr_service.OcrService.ModifyExpenseField:output_type -> ocr_service.ModifyExpenseFieldResponse
-	26, // [26:31] is the sub-list for method output_type
-	21, // [21:26] is the sub-list for method input_type
+	6,  // 26: ocr_service.OcrService.DeleteExpense:input_type -> ocr_service.DeleteExpenseRequest
+	12, // 27: ocr_service.OcrService.CreateFolder:output_type -> ocr_service.FolderCreationResponse
+	11, // 28: ocr_service.OcrService.SearchFolders:output_type -> ocr_service.FolderSearchResponse
+	13, // 29: ocr_service.OcrService.SearchFileData:output_type -> ocr_service.SearchFileResponse
+	14, // 30: ocr_service.OcrService.ExtractFileData:output_type -> ocr_service.ExtractFileResponse
+	15, // 31: ocr_service.OcrService.ModifyExpenseField:output_type -> ocr_service.ModifyExpenseFieldResponse
+	16, // 32: ocr_service.OcrService.DeleteExpense:output_type -> ocr_service.DeleteExpenseResponse
+	27, // [27:33] is the sub-list for method output_type
+	21, // [21:27] is the sub-list for method input_type
 	21, // [21:21] is the sub-list for extension type_name
 	21, // [21:21] is the sub-list for extension extendee
 	0,  // [0:21] is the sub-list for field type_name
@@ -1487,7 +1629,7 @@ func file_proto_ocr_service_proto_init() {
 			}
 		}
 		file_proto_ocr_service_proto_msgTypes[5].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*ExpenseField); i {
+			switch v := v.(*DeleteExpenseRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1499,7 +1641,7 @@ func file_proto_ocr_service_proto_init() {
 			}
 		}
 		file_proto_ocr_service_proto_msgTypes[6].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*FileExtract); i {
+			switch v := v.(*ExpenseField); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1511,7 +1653,7 @@ func file_proto_ocr_service_proto_init() {
 			}
 		}
 		file_proto_ocr_service_proto_msgTypes[7].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*ExpenseItem); i {
+			switch v := v.(*FileExtract); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1523,7 +1665,7 @@ func file_proto_ocr_service_proto_init() {
 			}
 		}
 		file_proto_ocr_service_proto_msgTypes[8].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*Expenses); i {
+			switch v := v.(*ExpenseItem); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1535,7 +1677,7 @@ func file_proto_ocr_service_proto_init() {
 			}
 		}
 		file_proto_ocr_service_proto_msgTypes[9].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*FolderSearchResponse); i {
+			switch v := v.(*Expenses); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1547,7 +1689,7 @@ func file_proto_ocr_service_proto_init() {
 			}
 		}
 		file_proto_ocr_service_proto_msgTypes[10].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*FolderCreationResponse); i {
+			switch v := v.(*FolderSearchResponse); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1559,7 +1701,7 @@ func file_proto_ocr_service_proto_init() {
 			}
 		}
 		file_proto_ocr_service_proto_msgTypes[11].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*SearchFileResponse); i {
+			switch v := v.(*FolderCreationResponse); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1571,7 +1713,7 @@ func file_proto_ocr_service_proto_init() {
 			}
 		}
 		file_proto_ocr_service_proto_msgTypes[12].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*ExtractFileResponse); i {
+			switch v := v.(*SearchFileResponse); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1583,7 +1725,31 @@ func file_proto_ocr_service_proto_init() {
 			}
 		}
 		file_proto_ocr_service_proto_msgTypes[13].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*ExtractFileResponse); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_proto_ocr_service_proto_msgTypes[14].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*ModifyExpenseFieldResponse); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_proto_ocr_service_proto_msgTypes[15].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*DeleteExpenseResponse); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1601,7 +1767,7 @@ func file_proto_ocr_service_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_proto_ocr_service_proto_rawDesc,
 			NumEnums:      1,
-			NumMessages:   14,
+			NumMessages:   16,
 			NumExtensions: 0,
 			NumServices:   1,
 		},
