@@ -1,0 +1,3 @@
+[submodule "Service-Protobufs"]
+	path = Service-Protobufs
+	url = https://github.com/Sobaii
