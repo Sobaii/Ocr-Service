@@ -11,6 +11,7 @@ type Receipt struct {
 	Street          string  `json:"street"`
 	Gratuity        float64 `json:"gratuity"`
 	City            string  `json:"city"`
+	Currency        string  `json:"currency"`
 	State           string  `json:"state"`
 	Country         string  `json:"country"`
 	ZipCode         string  `json:"zipCode"`

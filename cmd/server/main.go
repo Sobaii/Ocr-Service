@@ -1,21 +1,38 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"net/http"
-	"github.com/yourusername/ocr-service/internal/api"
-	"github.com/yourusername/ocr-service/internal/config"
-	"github.com/yourusername/ocr-service/internal/service"
+	"os"
+
+	"github.com/Sobaii/Ocr-Service/internal/api"
+	"github.com/Sobaii/Ocr-Service/internal/service"
+	"github.com/Sobaii/Ocr-Service/pkg/openai"
 )
 
 func main() {
-	cfg := config.Load()
+	apiKey := os.Getenv("OPENAI_API_KEY")
+	if apiKey == "" {
+		log.Fatal("OPENAI_API_KEY environment variable is not set")
+	}
 
-	ocrService := service.NewOCRService(cfg.OpenAIAPIKey)
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "8080"
+	}
+
+	openAIClient := openai.NewClient(apiKey)
+	ocrService := service.NewOCRService(openAIClient)
 	handler := api.NewHandler(ocrService)
 
 	http.HandleFunc("/analyze", handler.AnalyzeReceipt)
 
-	log.Printf("Server starting on port %s", cfg.Port)
-	log.Fatal(http.ListenAndServe(":"+cfg.Port, nil))
+	// Simple GET request example
+	http.HandleFunc("/hello", func(w http.ResponseWriter, r *http.Request) {
+		fmt.Fprintf(w, "Hello, World!")
+	})
+
+	log.Printf("Server starting on port %s", port)
+	log.Fatal(http.ListenAndServe(":"+port, nil))
 }

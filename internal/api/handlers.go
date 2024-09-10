@@ -3,7 +3,8 @@ package api
 import (
 	"encoding/json"
 	"net/http"
-	"github.com/yourusername/ocr-service/internal/service"
+
+	"github.com/Sobaii/Ocr-Service/internal/service"
 )
 
 type Handler struct {
@@ -15,7 +16,7 @@ func NewHandler(ocrService *service.OCRService) *Handler {
 }
 
 func (h *Handler) AnalyzeReceipt(w http.ResponseWriter, r *http.Request) {
-	if r.Method != http.MethodPost {
+	if r.Method != "POST" {
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
 		return
 	}

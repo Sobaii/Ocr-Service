@@ -12,6 +12,7 @@ RUN CGO_ENABLED=0 GOOS=linux go build -o /ocr-service ./cmd/server
 FROM alpine:latest
 
 COPY --from=builder /ocr-service /ocr-service
+COPY .env /.env
 
 EXPOSE 8080
 

@@ -4,7 +4,8 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
+	"io"
+	"log"
 	"net/http"
 )
 
@@ -16,7 +17,7 @@ func NewClient(apiKey string) *Client {
 	return &Client{APIKey: apiKey}
 }
 
-func (c *Client) AnalyzeImage(imageURL string) (string, error) {
+func (c *Client) AnalyzeImage(imageURL string) (string, error) { 
 	url := "https://api.openai.com/v1/chat/completions"
 	categories := []string{
 		"advertising", "meals", "amortization", "insurance", "bank charge", "interest",
@@ -30,14 +31,14 @@ func (c *Client) AnalyzeImage(imageURL string) (string, error) {
 	}
 
 	payload := map[string]interface{}{
-		"model": "gpt-4-vision-preview",
+		"model": "gpt-4o-mini",
 		"messages": []map[string]interface{}{
 			{
 				"role": "user",
 				"content": []map[string]interface{}{
 					{
 						"type": "text",
-						"text": fmt.Sprintf("Extract from the first receipt you see: transactionDate, company, vendorAddress, total, subtotal, totalTax, vendorPhone, street, gratuity, city, state, country, zipCode, and category. Be very meticulous about categorizing this receipt into one of the following categories: %s. Return the result as plain JSON. Do not include any markdown or code blocks. Pay very special attention to the subtotal, total tax, and total. Date format: YYYY-MM-DD. Ensure number values are numbers, not strings. No additional text.", categories),
+						"text": fmt.Sprintf("Extract from the first receipt you see: transactionDate, company, currency, vendorAddress, total, subtotal, totalTax, vendorPhone, street, gratuity, city, state, country, zipCode, and category. Be very meticulous about categorizing this receipt into one of the following categories: %s. Return the result as plain JSON. Do not include any markdown or code blocks. Pay very special attention to the subtotal, total tax, and total. Date format: YYYY-MM-DD. Ensure number values are numbers, not strings. No additional text.", categories),
 					},
 					{
 						"type": "image_url",
@@ -57,25 +58,27 @@ func (c *Client) AnalyzeImage(imageURL string) (string, error) {
 		return "", err
 	}
 
+	
 	req, err := http.NewRequest("POST", url, bytes.NewBuffer(payloadBytes))
 	if err != nil {
 		return "", err
 	}
-
+	
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("Authorization", "Bearer "+c.APIKey)
-
+	
 	client := &http.Client{}
 	resp, err := client.Do(req)
 	if err != nil {
 		return "", err
 	}
 	defer resp.Body.Close()
-
-	body, err := ioutil.ReadAll(resp.Body)
+	
+	body, err := io.ReadAll(resp.Body)
 	if err != nil {
 		return "", err
 	}
+	log.Printf("Server starting on port %s", body)
 
 	var result map[string]interface{}
 	err = json.Unmarshal(body, &result)
